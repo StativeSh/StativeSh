@@ -8,220 +8,324 @@
 <meta property="og:title" content="Shreyas Kodishala">
 <meta property="og:description" content="Interactive physics and chemistry software.">
 <meta property="og:url" content="https://shreyaskodishala.tech">
-<meta name="theme-color" content="#FFFFFF">
+<meta name="theme-color" content="#F3EFE7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121110" media="(prefers-color-scheme: dark)">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
 <style>
-:root{--ink:#1D1D1F;--grey:#6E6E73;--soft:#F5F5F7;--line:#D2D2D7;--blue:#0071E3;--blue-hover:#0077ED}
+:root{
+  color-scheme:light dark;
+  --paper:#F3EFE7;--paper-2:#EAE4D8;--ink:#17160F;--ink-2:#57534A;--rule:#D3CBBB;--sig:#B5360F;
+  --serif:"Newsreader",Georgia,"Times New Roman",serif;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --gut:clamp(16px,4vw,48px)
+}
+@media (prefers-color-scheme:dark){
+  :root{--paper:#121110;--paper-2:#1B1A17;--ink:#ECE7DC;--ink-2:#A39E92;--rule:#34322D;--sig:#FF6A3D}
+}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{margin:0;background:#FFFFFF;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Inter",system-ui,sans-serif;font-size:17px;line-height:1.47;-webkit-font-smoothing:antialiased}
-a{color:var(--blue);text-decoration:none}
-a:hover{text-decoration:underline}
-.display{font-family:-apple-system,BlinkMacSystemFont,"Inter Tight","Inter",sans-serif;font-weight:600;letter-spacing:-0.025em;margin:0}
-.wrap{max-width:1024px;margin:0 auto;padding:0 22px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 17px/1.55 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-underline-offset:.2em;text-decoration-thickness:1px}
+a:hover{color:var(--sig)}
+:focus-visible{outline:2px solid var(--sig);outline-offset:3px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:absolute;left:var(--gut);top:-60px;background:var(--ink);color:var(--paper);padding:8px 12px;font:500 13px var(--mono);z-index:30}
+.skip:focus{top:8px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 var(--gut)}
+.mono{font-family:var(--mono);font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-2)}
+.serif{font-family:var(--serif);font-weight:400;letter-spacing:-.015em;margin:0}
+em{font-style:italic}
 
-nav.bar{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.72);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid rgba(0,0,0,.08)}
-nav.bar .wrap{display:flex;justify-content:space-between;align-items:center;height:52px;font-size:13px}
-nav.bar .name{color:var(--ink);font-weight:600;font-size:15px}
-nav.bar .links{display:flex;gap:24px}
-nav.bar .links a{color:var(--ink);opacity:.8}
-nav.bar .links a:hover{opacity:1;text-decoration:none}
-@media (prefers-reduced-transparency:reduce){nav.bar{background:#FFFFFF;-webkit-backdrop-filter:none;backdrop-filter:none}}
+/* progress + nav */
+.progress{position:fixed;inset:0 0 auto 0;height:2px;background:var(--sig);transform-origin:0 50%;transform:scaleX(0);z-index:25}
+nav.top{position:sticky;top:0;z-index:20;background:var(--paper);border-bottom:1px solid var(--rule)}
+nav.top .wrap{display:flex;justify-content:space-between;align-items:center;height:56px;gap:16px}
+nav.top .name{font:500 15px var(--sans);text-decoration:none}
+nav.top ol{list-style:none;display:flex;gap:28px;margin:0;padding:0}
+nav.top ol a{font:400 13px var(--mono);text-decoration:none;color:var(--ink-2)}
+nav.top ol a i{font-style:normal;color:var(--sig);margin-right:6px}
+nav.top ol a:hover{color:var(--ink)}
 
-.pill{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 22px;border-radius:980px;font-size:17px;font-weight:400}
-.pill.primary{background:var(--blue);color:#FFFFFF}
-.pill.primary:hover{background:var(--blue-hover);text-decoration:none}
-.pill.ghost{border:1px solid var(--blue);color:var(--blue)}
-.pill.ghost:hover{background:var(--blue);color:#FFFFFF;text-decoration:none}
-.label{display:inline-block;font-size:12px;font-weight:600;padding:5px 12px;border-radius:980px;background:var(--soft);color:var(--grey)}
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:10px;min-height:46px;padding:0 20px;border:1px solid var(--ink);font:500 15px var(--sans);text-decoration:none;background:transparent;color:var(--ink);transition:background .2s,color .2s}
+.btn .ar{display:inline-block;transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+.btn:hover{background:var(--ink);color:var(--paper)}
+.btn:hover .ar{transform:translateX(4px)}
+.btn.solid{background:var(--ink);color:var(--paper)}
+.btn.solid:hover{background:var(--sig);border-color:var(--sig);color:#fff}
+.link{font:500 15px var(--sans);text-decoration:none;border-bottom:1px solid var(--rule);padding-bottom:2px}
+.link:hover{border-color:var(--sig)}
 
-.hero{text-align:center;padding:88px 0 0}
-.hero h1{font-size:clamp(44px,7.4vw,80px);line-height:1.05;max-width:13ch;margin:18px auto 0}
-.hero .sub{font-size:clamp(19px,2.4vw,24px);color:var(--grey);max-width:34ch;margin:18px auto 0;line-height:1.35}
-.hero .ctas{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:30px}
-.portrait{position:relative;width:min(100%,460px);aspect-ratio:300/376;margin:48px auto 0;touch-action:pan-y}
+/* hero */
+.hero{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.85fr);gap:clamp(24px,4vw,64px);align-items:center;padding:clamp(40px,7vw,96px) 0 clamp(48px,6vw,88px);border-bottom:1px solid var(--rule)}
+.kicker{display:flex;flex-wrap:wrap;gap:6px 18px;margin-bottom:28px}
+.kicker span+span::before{content:"/";margin-right:18px;color:var(--rule)}
+.hero h1{font:400 clamp(44px,6.4vw,90px)/.98 var(--serif);letter-spacing:-.03em;margin:0}
+.hero h1 .ln{display:block;overflow:hidden;padding-bottom:.08em;margin-bottom:-.08em}
+.hero h1 .ln>span{display:inline-block;white-space:nowrap}
+.rot{display:inline-grid;font-style:italic;color:var(--sig)}
+.rot>span{grid-area:1/1;white-space:nowrap}
+.rot>span:not(:first-child){opacity:0}
+.lede{font-size:clamp(18px,1.6vw,20px);color:var(--ink-2);max-width:36ch;margin:28px 0 0}
+.ctas{display:flex;flex-wrap:wrap;gap:14px 22px;align-items:center;margin-top:32px}
+
+figure{margin:0}
+.plate{position:relative;padding:14px;background:var(--paper)}
+@media (prefers-color-scheme:dark){.plate{--paper:#EAE4D8;--ink:#17160F;--ink-2:#57534A;--rule:#C9C1B0;--sig:#B5360F;color:var(--ink);outline:10px solid #EAE4D8}}
+.plate::before,.plate::after,.plate .c1,.plate .c2{content:"";position:absolute;width:14px;height:14px;border-color:var(--ink);border-style:solid}
+.plate::before{top:0;left:0;border-width:1px 0 0 1px}
+.plate::after{top:0;right:0;border-width:1px 1px 0 0}
+.plate .c1{bottom:0;left:0;border-width:0 0 1px 1px}
+.plate .c2{bottom:0;right:0;border-width:0 1px 1px 0}
+.readout{display:flex;justify-content:space-between;gap:12px;font:400 11px var(--mono);color:var(--ink-2);letter-spacing:.03em}
+.readout b{font-weight:500;color:var(--ink)}
+.portrait{position:relative;width:100%;max-width:460px;margin:8px auto;aspect-ratio:300/376;touch-action:pan-y}
 .portrait canvas{position:absolute;inset:0;width:100%;height:100%;cursor:crosshair}
-.hint{font-size:12px;color:var(--grey);text-align:center;margin:10px 0 0}
+figcaption{font-size:14px;color:var(--ink-2);margin-top:14px;line-height:1.5}
+figcaption .mono{margin-right:8px;color:var(--ink)}
+.eq{margin-top:14px;padding-top:12px;border-top:1px dashed var(--rule);font:400 12.5px/1.7 var(--mono);color:var(--ink-2);overflow-x:auto;white-space:nowrap}
+.eq i{font-style:normal;color:var(--sig)}
 
-section{padding:120px 0}
-.head{text-align:center;margin-bottom:56px}
-.head h2{font-size:clamp(36px,5.4vw,56px);line-height:1.07}
-.head p{font-size:clamp(19px,2.2vw,21px);color:var(--grey);margin:14px auto 0;max-width:40ch}
+/* sections */
+section{padding:clamp(72px,10vw,136px) 0 0}
+.sh{display:grid;grid-template-columns:120px 1fr;gap:24px;align-items:baseline;margin-bottom:clamp(36px,5vw,64px)}
+.sh .rule{grid-column:1/-1;height:1px;background:var(--ink);transform-origin:0 50%}
+.sh h2{font:400 clamp(38px,5.4vw,68px)/1 var(--serif);letter-spacing:-.025em;margin:0}
+.sh p{grid-column:2;margin:-8px 0 0;color:var(--ink-2);max-width:48ch}
 
-.show{border-radius:28px;overflow:hidden;display:grid;grid-template-columns:1fr 1fr;margin-bottom:22px}
-.show.dark{background:#000000;color:#F5F5F7}
-.show.light{background:var(--soft)}
-.show .copy{padding:56px 48px;display:flex;flex-direction:column;gap:14px;justify-content:center}
-.show h3{font-size:clamp(30px,3.6vw,40px);line-height:1.1}
-.show .copy p{margin:0;font-size:17px}
-.show.dark .copy p{color:#A1A1A6}
-.show.light .copy p{color:var(--grey)}
-.show ul{list-style:none;margin:6px 0 10px;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:6px 18px;font-size:15px}
-.show .media{min-height:420px;display:flex;align-items:center;justify-content:center;background:#000000}
-.show .media img{width:100%;height:100%;object-fit:cover;display:block}
-.show .row{display:flex;gap:22px;align-items:center;flex-wrap:wrap;margin-top:6px}
-.show.dark .row a.more{color:#2997FF}
-.more::after{content:" ›"}
+/* experiments */
+.exp{display:grid;grid-template-columns:120px minmax(0,1fr) minmax(0,1.1fr);gap:24px clamp(24px,4vw,56px);padding:clamp(28px,4vw,48px) 0;border-top:1px solid var(--rule)}
+.exp:first-of-type{border-top:0;padding-top:0}
+.exp .no{font:400 13px var(--mono);color:var(--sig)}
+.exp h3{font:400 clamp(34px,4vw,52px)/1 var(--serif);letter-spacing:-.02em;margin:0 0 14px}
+.exp .stack{margin-bottom:18px}
+.exp p{margin:0 0 18px;max-width:44ch}
+.exp ul{list-style:none;margin:0 0 26px;padding:0;columns:2;column-gap:24px;font-size:15px;color:var(--ink-2)}
+.exp li{padding:5px 0;border-bottom:1px solid var(--rule);break-inside:avoid}
+.exp li::before{content:"·";color:var(--sig);margin-right:8px}
+.exp .ctas{margin-top:0}
+.fig{background:var(--paper-2);aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.fig svg{width:78%;height:auto}
+.fig img{width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(.15) contrast(1.05)}
+.fig.dark{background:#0B0B0A}
 
-.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:22px}
-.tile{background:var(--soft);border-radius:28px;padding:40px;display:flex;flex-direction:column;gap:10px;color:var(--ink)}
-a.tile:hover{text-decoration:none}
-.tile h3{font-size:28px;line-height:1.14}
-.tile p{margin:0;color:var(--grey)}
-.tile .more{margin-top:auto;color:var(--blue)}
+.minor{display:grid;grid-template-columns:120px repeat(2,minmax(0,1fr));gap:0 clamp(24px,4vw,56px);border-top:1px solid var(--rule);padding-top:28px;margin-top:8px}
+.minor a{display:block;text-decoration:none;padding:0 0 4px}
+.minor h4{font:400 30px/1.1 var(--serif);margin:10px 0 8px;letter-spacing:-.015em}
+.minor p{margin:0 0 14px;color:var(--ink-2);font-size:15px}
+.minor .sig{color:var(--sig)}
+.minor .go{font:500 14px var(--sans)}
+.minor .go .ar{display:inline-block;transition:transform .25s}
+.minor a:hover h4{color:var(--sig)}
+.minor a:hover .ar{transform:translateX(4px)}
 
-.list{display:flex;flex-direction:column}
-.list div{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:14px 0;border-bottom:1px solid var(--line)}
-.list div:last-child{border-bottom:0}
-.list strong{font-size:21px;font-weight:600}
-.list span{font-size:15px;color:var(--grey)}
+/* notebook */
+.notes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-bottom:1px solid var(--rule)}
+.note{padding:28px clamp(18px,2.6vw,32px) 36px;border-left:1px solid var(--rule)}
+.note:first-child{border-left:0;padding-left:0}
+.note h3{font:400 28px/1.15 var(--serif);margin:14px 0 10px;letter-spacing:-.015em}
+.note p{margin:0;color:var(--ink-2);font-size:15px}
+.tbl{width:100%;border-collapse:collapse;margin-top:16px;font-size:15px}
+.tbl td{padding:9px 0;border-bottom:1px solid var(--rule)}
+.tbl td:last-child{text-align:right;font:400 12px var(--mono);color:var(--ink-2);text-transform:uppercase;letter-spacing:.04em}
+.tbl tr:last-child td{border-bottom:0}
 
-.band{background:var(--soft)}
-.chips{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:32px 0 36px}
-.chips span{font-size:14px;padding:8px 16px;border-radius:980px;background:#FFFFFF;color:var(--ink)}
-.center{text-align:center}
+/* about */
+.about{display:grid;grid-template-columns:120px minmax(0,1.3fr) minmax(0,1fr);gap:24px clamp(24px,4vw,56px)}
+.about .big{font:400 clamp(26px,2.8vw,38px)/1.25 var(--serif);letter-spacing:-.015em;margin:0}
+.about .big em{color:var(--sig)}
+.tools{list-style:none;padding:0;margin:0;font-size:15px}
+.tools li{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--rule)}
+.tools li span{font:400 12px var(--mono);color:var(--ink-2);text-transform:uppercase;letter-spacing:.04em}
+.about .ctas{grid-column:2/-1}
 
-footer{border-top:1px solid var(--line);padding:22px 0 40px;font-size:12px;color:var(--grey)}
-footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+footer{margin-top:clamp(72px,10vw,136px);border-top:1px solid var(--ink);padding:22px 0 44px}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px 24px}
+footer p{margin:0;font-size:13px;color:var(--ink-2)}
 
-@media (max-width:760px){
-  section{padding:84px 0}
-  .show{grid-template-columns:1fr}
-  .show .copy{padding:36px 26px}
-  .show .media{min-height:280px}
-  .show.flip .media{order:-1}
-  .show ul{grid-template-columns:1fr}
-  .tile{padding:30px}
-  nav.bar .links{gap:16px}
-  nav.bar .links .hide-sm{display:none}
-  .hero{padding-top:56px}
+/* motion initial states (only when JS + motion allowed) */
+.m .hero h1 .ln>span{transform:translateY(105%)}
+.m .rv{opacity:0;transform:translateY(18px)}
+.m .sh .rule{transform:scaleX(0)}
+
+@media (max-width:900px){
+  .hero{grid-template-columns:minmax(0,1fr);align-items:start}
+  .hero figure{max-width:520px;width:100%;min-width:0;margin:0 auto}
+  .sh,.exp,.minor,.about{grid-template-columns:1fr}
+  .sh p,.about .ctas{grid-column:1}
+  .sh p{margin-top:0}
+  .exp .fig{order:-1}
+  .minor{gap:28px}
+  .notes{grid-template-columns:1fr}
+  .note{border-left:0;border-top:1px solid var(--rule);padding:24px 0 28px}
+  .note:first-child{border-top:0}
+}
+@media (max-width:560px){
+  nav.top ol{gap:16px}
+  nav.top .hide-sm{display:none}
+  .exp ul{columns:1}
+  .readout .hide-sm{display:none}
 }
 </style>
 </head>
 <body>
+<a class="skip" href="#work">Skip to work</a>
+<div class="progress" aria-hidden="true"></div>
 
-<nav class="bar" aria-label="Main">
+<nav class="top" aria-label="Main">
   <div class="wrap">
     <a class="name" href="#top">Shreyas Kodishala</a>
-    <div class="links">
-      <a href="#work">Work</a>
-      <a href="#beyond" class="hide-sm">Beyond code</a>
-      <a href="#about">About</a>
-      <a href="https://github.com/StativeSh">GitHub</a>
-    </div>
+    <ol>
+      <li><a href="#work"><i>01</i>Work</a></li>
+      <li class="hide-sm"><a href="#notebook"><i>02</i>Notebook</a></li>
+      <li><a href="#about"><i>03</i>About</a></li>
+    </ol>
   </div>
 </nav>
 
 <main id="top">
-  <header class="hero wrap">
-    <span class="label">Hyderabad, India</span>
-    <h1 class="display">I turn physics into things you can play with.</h1>
-    <p class="sub">Simulations, chemistry labs and quantum visualisations that run in your browser.</p>
-    <div class="ctas">
-      <a class="pill primary" href="#work">See my work</a>
-      <a class="pill ghost" href="https://github.com/StativeSh">View GitHub</a>
-    </div>
-    <div class="portrait" id="art">
-      <canvas id="cv" role="img" aria-label="Portrait of Shreyas drawn in dots"></canvas>
-    </div>
-    <p class="hint">Move your cursor or finger over the portrait.</p>
-  </header>
+  <div class="wrap">
+    <header class="hero">
+      <div>
+        <div class="kicker mono rv"><span>Plate I</span><span>Hyderabad, India</span><span>Physics &amp; code</span></div>
+        <h1>
+          <span class="sr">I turn physics into things you can play with.</span>
+          <span aria-hidden="true">
+            <span class="ln"><span>I turn physics</span></span>
+            <span class="ln"><span>into things you</span></span>
+            <span class="ln"><span>can <span class="rot"><span>play with.</span><span>poke at.</span><span>take apart.</span><span>see.</span></span></span></span>
+          </span>
+        </h1>
+        <p class="lede rv">Simulations, chemistry labs and quantum visualisations that run in your browser, built from the real equations rather than approximations of them.</p>
+        <div class="ctas rv">
+          <a class="btn solid" href="#work">See the experiments <span class="ar" aria-hidden="true">→</span></a>
+          <a class="link" href="https://github.com/StativeSh">GitHub ↗</a>
+        </div>
+      </div>
+
+      <figure class="plate rv">
+        <span class="c1"></span><span class="c2"></span>
+        <div class="readout" aria-hidden="true"><span>Fig. 1</span><span>N = <b id="ro-n">0</b></span><span class="hide-sm">x <b id="ro-x">—</b> y <b id="ro-y">—</b></span></div>
+        <div class="portrait" id="art">
+          <canvas id="cv" role="img" aria-label="Portrait of Shreyas drawn in dots"></canvas>
+        </div>
+        <p class="sr">Update rule: velocity gains 0.045 times the distance to its home position plus the cursor force, then is multiplied by 0.85.</p>
+        <div class="eq" aria-hidden="true">v += <i>0.045</i>·(x₀ − x) + F<sub>cursor</sub> &nbsp;&nbsp; v *= <i>0.85</i> &nbsp;&nbsp; x += v</div>
+        <figcaption><span class="mono">Fig. 1</span>The author, as particles. Each dot is held to its place by a spring; your cursor pushes them away. Move over it.</figcaption>
+      </figure>
+    </header>
+  </div>
 
   <section id="work">
     <div class="wrap">
-      <div class="head">
-        <h2 class="display">Selected work.</h2>
-        <p>Everything here runs live in your browser.</p>
+      <div class="sh">
+        <span class="mono">§ 01</span>
+        <h2 class="rv">Experiments</h2>
+        <p class="rv">Everything here runs live in your browser.</p>
+        <span class="rule" aria-hidden="true"></span>
       </div>
 
-      <article class="show dark">
-        <div class="copy">
-          <span class="label" style="align-self:flex-start;background:#1D1D1F;color:#A1A1A6">Three.js · JavaScript · Android</span>
-          <h3 class="display">Atoms.</h3>
+      <article class="exp rv">
+        <span class="no">Exp. 01</span>
+        <div>
+          <h3>Atoms</h3>
+          <div class="mono stack">Three.js · JavaScript · Android</div>
           <p>An interactive chemistry lab built on real hydrogen-like wavefunctions, covering every element from H to Og.</p>
           <ul>
             <li>3D s, p, d, f orbitals</li><li>Periodic table</li><li>Crystal structures</li><li>Reaction lab</li><li>Electrochemistry</li><li>Spectroscopy and titration</li>
           </ul>
-          <div class="row">
-            <a class="pill primary" href="https://stativesh.github.io/atoms/">Open live demo</a>
-            <a class="more" href="https://github.com/StativeSh/atoms">Source code</a>
+          <div class="ctas">
+            <a class="btn" href="https://stativesh.github.io/atoms/">Open live demo <span class="ar" aria-hidden="true">→</span></a>
+            <a class="link" href="https://github.com/StativeSh/atoms">Source code</a>
           </div>
         </div>
-        <div class="media">
-          <svg width="300" height="300" viewBox="0 0 300 300" role="img" aria-label="Illustration of an atom with three electron orbits">
-            <g fill="none" stroke="#F5F5F7" stroke-width="1.2">
-              <ellipse cx="150" cy="150" rx="130" ry="46" opacity=".75"></ellipse>
-              <ellipse cx="150" cy="150" rx="130" ry="46" opacity=".55" transform="rotate(60 150 150)"></ellipse>
-              <ellipse cx="150" cy="150" rx="130" ry="46" opacity=".55" transform="rotate(120 150 150)"></ellipse>
-            </g>
-            <circle cx="150" cy="150" r="12" fill="#2997FF"></circle>
-            <circle cx="280" cy="150" r="4.5" fill="#F5F5F7"></circle>
-            <circle cx="85" cy="104" r="4.5" fill="#F5F5F7"></circle>
-            <circle cx="190" cy="226" r="4.5" fill="#F5F5F7"></circle>
-          </svg>
-        </div>
+        <figure>
+          <div class="fig">
+            <svg id="atom" viewBox="0 0 300 300" role="img" aria-label="Diagram of an atom with three electron orbits">
+              <g fill="none" stroke="currentColor" stroke-width="1" style="color:var(--ink)">
+                <ellipse cx="150" cy="150" rx="130" ry="46" opacity=".7"></ellipse>
+                <ellipse cx="150" cy="150" rx="130" ry="46" opacity=".45" transform="rotate(60 150 150)"></ellipse>
+                <ellipse cx="150" cy="150" rx="130" ry="46" opacity=".45" transform="rotate(120 150 150)"></ellipse>
+                <circle cx="150" cy="150" r="138" stroke-dasharray="2 5" opacity=".35"></circle>
+              </g>
+              <circle cx="150" cy="150" r="11" style="fill:var(--sig)"></circle>
+              <g style="fill:var(--ink)"><circle class="e" r="4.5" cx="280" cy="150"></circle><circle class="e" r="4.5" cx="85" cy="104"></circle><circle class="e" r="4.5" cx="190" cy="226"></circle></g>
+            </svg>
+          </div>
+          <figcaption><span class="mono">Fig. 2</span>Three electrons on tilted orbits. A sketch, not a wavefunction; the real ones are in the demo.</figcaption>
+        </figure>
       </article>
 
-      <article class="show light flip">
-        <div class="copy">
-          <span class="label" style="align-self:flex-start;background:#FFFFFF">Python · NumPy · SymPy · Jupyter</span>
-          <h3 class="display">Quantum Playground.</h3>
+      <article class="exp rv">
+        <span class="no">Exp. 02</span>
+        <div>
+          <h3>Quantum Playground</h3>
+          <div class="mono stack">Python · NumPy · SymPy · Jupyter</div>
           <p>Physics and maths simulations, with tests that check every solver against known analytic results.</p>
           <ul>
             <li>2D double slit</li><li>Quantum tunnelling</li><li>Chaotic double pendulum</li><li>Three-body orbits</li><li>Ising model</li><li>Lorenz attractor</li>
           </ul>
-          <div class="row">
-            <a class="pill primary" href="https://stativesh.github.io/quantum-playground/explorer/">Try the explorer</a>
-            <a class="more" href="https://github.com/StativeSh/quantum-playground">Source code</a>
+          <div class="ctas">
+            <a class="btn" href="https://stativesh.github.io/quantum-playground/explorer/">Try the explorer <span class="ar" aria-hidden="true">→</span></a>
+            <a class="link" href="https://github.com/StativeSh/quantum-playground">Source code</a>
           </div>
         </div>
-        <div class="media">
-          <img src="assets/double-slit.gif" alt="A wavepacket passing through two slits and forming interference fringes" loading="lazy">
-        </div>
+        <figure>
+          <div class="fig dark">
+            <img src="assets/double-slit.gif" alt="A wavepacket passing through two slits and forming interference fringes" loading="lazy" width="320" height="295">
+          </div>
+          <figcaption><span class="mono">Fig. 3</span>A wavepacket meets two slits. The fringes on the far side are the interference pattern.</figcaption>
+        </figure>
       </article>
 
-      <div class="tiles">
-        <a class="tile" href="https://github.com/StativeSh/FinSight">
-          <span class="label" style="align-self:flex-start;background:#FFFFFF">In progress</span>
-          <h3 class="display">FinSight.</h3>
+      <div class="minor rv">
+        <span class="mono">Also</span>
+        <a href="https://github.com/StativeSh/FinSight">
+          <span class="mono sig">In progress</span>
+          <h4>FinSight</h4>
           <p>Monte Carlo simulations that show students the range of outcomes behind money decisions.</p>
-          <span class="more">View on GitHub</span>
+          <span class="go">View on GitHub <span class="ar" aria-hidden="true">→</span></span>
         </a>
-        <a class="tile" href="https://github.com/StativeSh?tab=repositories">
-          <h3 class="display">Everything else.</h3>
+        <a href="https://github.com/StativeSh?tab=repositories">
+          <span class="mono">Archive</span>
+          <h4>Everything else</h4>
           <p>Every public repository, most recent first.</p>
-          <span class="more">Browse GitHub</span>
+          <span class="go">Browse GitHub <span class="ar" aria-hidden="true">→</span></span>
         </a>
       </div>
     </div>
   </section>
 
-  <section id="beyond" class="band">
+  <section id="notebook">
     <div class="wrap">
-      <div class="head">
-        <h2 class="display">Beyond code.</h2>
-        <p>Music, languages and chess.</p>
+      <div class="sh">
+        <span class="mono">§ 02</span>
+        <h2 class="rv">Notebook</h2>
+        <p class="rv">Music, languages and chess, away from the editor.</p>
+        <span class="rule" aria-hidden="true"></span>
       </div>
-      <div class="tiles">
-        <div class="tile">
-          <span class="label" style="align-self:flex-start;background:#FFFFFF">Music</span>
-          <h3 class="display">Synth-pop and EDM, made at home.</h3>
+      <div class="notes rv">
+        <div class="note">
+          <span class="mono">Music</span>
+          <h3>Synth-pop and EDM, made at home.</h3>
           <p>Produced in GarageBand. First tracks coming soon.</p>
         </div>
-        <div class="tile" style="background:#FFFFFF">
-          <span class="label" style="align-self:flex-start">Languages</span>
-          <div class="list">
-            <div><strong>English</strong><span>Fluent</span></div>
-            <div><strong>Telugu</strong><span>Native</span></div>
-            <div><strong>Deutsch</strong><span>Learning</span></div>
-            <div><strong>Italiano</strong><span>Learning</span></div>
-          </div>
+        <div class="note">
+          <span class="mono">Languages</span>
+          <table class="tbl"><tbody>
+            <tr><td>English</td><td>Fluent</td></tr>
+            <tr><td>Telugu</td><td>Native</td></tr>
+            <tr><td lang="de">Deutsch</td><td>Learning</td></tr>
+            <tr><td lang="it">Italiano</td><td>Learning</td></tr>
+          </tbody></table>
         </div>
-        <div class="tile">
-          <span class="label" style="align-self:flex-start;background:#FFFFFF">Chess</span>
-          <h3 class="display">Lichess and Chess.com.</h3>
+        <div class="note">
+          <span class="mono">Chess</span>
+          <h3>Lichess and Chess.com.</h3>
           <p>I analyse my games with Stockfish and Maia.</p>
         </div>
       </div>
@@ -229,36 +333,54 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
   </section>
 
   <section id="about">
-    <div class="wrap center">
-      <div class="head" style="margin-bottom:0">
-        <h2 class="display">Hi, I'm Shreyas.</h2>
-        <p>A student in Hyderabad who takes ideas locked inside equations and makes them visible.</p>
+    <div class="wrap">
+      <div class="sh">
+        <span class="mono">§ 03</span>
+        <h2 class="rv">Hi, I'm Shreyas.</h2>
+        <span class="rule" aria-hidden="true"></span>
       </div>
-      <div class="chips">
-        <span style="background:var(--soft)">Python</span><span style="background:var(--soft)">JavaScript</span><span style="background:var(--soft)">Three.js</span><span style="background:var(--soft)">NumPy and SymPy</span><span style="background:var(--soft)">Jupyter</span><span style="background:var(--soft)">GitHub Actions</span><span style="background:var(--soft)">GarageBand</span>
+      <div class="about">
+        <span class="mono">About</span>
+        <p class="big rv">A student in Hyderabad who takes ideas locked inside equations and <em>makes them visible.</em></p>
+        <ul class="tools rv">
+          <li>Python <span>Simulation</span></li>
+          <li>JavaScript <span>Web</span></li>
+          <li>Three.js <span>3D</span></li>
+          <li>NumPy and SymPy <span>Maths</span></li>
+          <li>Jupyter <span>Notebooks</span></li>
+          <li>GitHub Actions <span>Testing</span></li>
+          <li>GarageBand <span>Music</span></li>
+        </ul>
+        <div class="ctas rv">
+          <a class="btn solid" href="mailto:hello@shreyaskodishala.tech">Email me <span class="ar" aria-hidden="true">→</span></a>
+          <a class="link" href="mailto:hello@shreyaskodishala.tech">hello@shreyaskodishala.tech</a>
+          <a class="link" href="https://github.com/StativeSh">GitHub ↗</a>
+        </div>
       </div>
-      <div class="ctas" style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
-        <a class="pill primary" href="mailto:hello@shreyaskodishala.tech">Email me</a>
-        <a class="pill ghost" href="https://github.com/StativeSh">GitHub</a>
-      </div>
-      <p style="font-size:14px;color:var(--grey);margin-top:16px">hello@shreyaskodishala.tech</p>
     </div>
   </section>
 </main>
 
 <footer>
   <div class="wrap">
-    <span>Copyright © 2026 Shreyas Kodishala.</span>
-    <span>shreyaskodishala.tech</span>
+    <p>Copyright © 2026 Shreyas Kodishala.</p>
+    <p>Set in Newsreader and IBM Plex. Fig. 1 is <span id="ro-n2">a few thousand</span> springs.</p>
   </div>
 </footer>
 
+<script src="assets/motion.min.js" defer></script>
 <script>
 (function(){
+const still=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if(!still)document.documentElement.classList.add('m');
+
+/* ---- Fig. 1: dot portrait (data and physics unchanged) ---- */
 const D=[236,49,5,253,49,2,258,48,6,261,49,4,207,53,4,212,53,4,216,52,8,220,53,9,224,52,9,229,52,9,233,54,9,238,53,9,242,52,9,247,52,9,251,53,9,255,53,9,263,52,9,269,53,9,273,53,8,277,53,8,281,52,8,287,53,9,290,52,8,295,53,7,205,58,9,210,57,9,213,58,9,217,58,9,227,56,9,231,57,7,235,57,9,241,58,9,244,58,9,249,56,9,254,58,9,258,57,9,262,57,9,266,58,9,271,58,9,275,57,9,280,57,9,285,58,9,288,57,9,293,57,9,297,57,9,301,57,9,305,57,9,311,57,8,315,58,9,319,56,9,323,58,7,328,57,7,188,61,4,194,61,8,198,62,9,203,62,9,208,61,9,211,62,9,216,62,9,220,62,9,224,61,9,229,62,9,232,62,8,238,61,9,242,61,9,246,62,8,259,61,7,264,62,8,268,62,6,286,62,8,295,61,8,304,62,9,317,61,9,321,62,9,325,62,9,330,61,9,183,66,8,191,67,9,196,66,7,204,67,7,209,66,7,213,66,7,217,67,6,223,67,1,231,65,3,249,65,5,266,66,5,279,66,5,289,67,7,302,65,4,318,67,8,324,66,8,328,66,9,332,66,9,340,66,7,345,66,9,349,66,9,175,71,9,180,71,9,189,71,7,193,70,6,198,70,7,212,71,3,225,71,3,229,71,6,234,71,7,242,71,6,247,71,7,251,70,5,260,70,4,277,70,5,282,71,6,285,70,6,291,70,9,294,70,9,299,71,9,303,70,8,308,71,9,321,70,6,325,70,7,329,71,8,335,71,7,340,70,9,342,71,9,348,71,9,352,71,8,360,70,9,365,70,9,370,71,8,169,75,9,174,74,9,179,74,9,183,74,7,192,74,5,195,75,5,205,75,9,209,74,8,213,75,7,217,75,8,221,75,9,227,75,8,236,75,8,240,75,8,244,75,9,249,74,9,253,74,9,258,74,9,261,75,9,266,74,9,270,74,7,283,75,6,288,75,8,293,75,9,297,75,8,301,75,8,310,74,8,314,75,9,319,74,7,324,75,7,327,75,7,333,75,8,340,75,6,346,75,8,349,74,9,354,75,9,363,74,8,367,74,9,372,75,9,376,75,9,380,74,9,158,80,7,162,78,9,168,79,9,171,79,9,176,79,9,180,79,9,185,79,9,190,80,9,194,80,8,199,80,9,203,79,9,208,79,8,211,79,6,216,79,5,220,80,8,225,80,9,229,79,9,237,79,7,241,79,5,246,79,5,251,78,6,260,79,9,264,79,8,269,79,7,273,80,9,282,79,4,295,80,7,299,80,7,304,78,5,307,79,5,312,80,6,317,79,4,322,79,9,326,79,9,334,79,9,339,80,7,352,79,7,357,80,7,362,80,7,366,80,9,370,80,9,375,79,9,378,80,9,383,79,9,388,78,9,391,79,9,157,84,9,161,83,9,165,84,9,169,83,9,173,83,9,178,83,9,182,83,9,186,84,9,191,83,9,196,83,8,209,84,6,214,84,7,218,84,9,222,84,9,232,83,8,235,84,9,240,83,9,245,84,5,248,83,7,257,84,4,279,83,9,284,83,9,288,83,8,292,83,4,332,83,9,336,83,7,342,83,8,345,84,9,350,83,7,355,84,8,359,84,7,364,84,8,367,84,9,371,83,9,376,84,9,380,84,9,385,83,9,389,83,9,393,83,9,150,87,9,154,88,9,162,88,9,167,87,7,172,89,6,189,87,5,198,88,9,203,88,8,220,89,6,229,88,5,238,89,7,242,88,6,272,88,5,282,88,6,299,89,6,303,88,9,309,89,8,316,88,7,321,88,6,326,88,7,338,87,9,343,89,9,353,88,8,361,88,9,365,87,5,369,89,9,374,88,8,379,89,8,382,88,9,388,88,9,391,88,9,395,88,9,400,88,9,406,88,9,143,92,9,147,92,9,152,92,7,160,92,6,178,92,6,183,92,4,186,93,3,210,93,5,214,92,5,223,92,7,226,93,5,232,92,7,236,92,6,244,92,7,252,92,6,271,92,2,276,92,6,280,92,5,287,92,6,310,92,9,315,93,8,319,93,6,323,93,8,328,92,8,337,93,9,346,92,8,350,93,8,373,92,6,376,93,9,381,92,7,385,93,8,390,92,9,393,93,9,399,92,9,403,93,9,407,92,9,411,92,9,137,96,9,141,96,9,146,98,9,150,97,7,180,97,8,185,96,8,189,96,8,199,96,5,211,97,6,220,97,5,225,96,7,229,97,8,238,96,9,247,97,6,260,96,5,269,96,5,281,97,6,291,97,4,294,97,6,308,97,2,317,96,6,321,97,7,325,97,9,330,96,8,334,97,9,353,97,4,356,97,8,369,96,7,374,96,8,379,97,8,383,96,8,387,97,9,396,97,9,400,97,9,406,98,9,410,96,9,414,96,9,418,98,9,134,102,9,138,102,9,143,101,9,147,100,9,152,101,9,156,101,9,160,101,9,170,101,9,174,101,9,179,101,5,191,101,5,197,101,9,201,101,6,213,102,4,226,101,6,231,100,7,239,101,6,243,101,7,253,101,6,257,102,6,266,102,8,271,101,7,280,101,7,284,101,8,289,101,7,298,101,8,301,102,7,306,101,6,329,102,5,332,101,9,341,102,7,346,101,5,350,101,5,358,102,7,363,101,8,372,101,7,390,102,9,394,101,8,399,101,8,407,101,9,411,101,9,415,102,9,421,102,9,132,106,9,137,105,9,141,105,9,145,106,9,150,106,9,154,106,9,158,105,9,176,105,7,184,105,8,190,105,7,193,106,7,197,106,6,206,105,6,215,106,9,220,105,9,224,105,7,229,105,8,234,105,8,238,106,6,242,106,2,254,106,5,260,105,3,273,105,6,278,106,9,282,105,7,291,105,9,296,106,9,300,106,8,307,106,7,312,106,6,338,106,7,347,106,5,351,105,3,356,106,7,361,106,7,365,106,7,370,106,7,375,105,7,378,106,7,383,106,5,391,106,7,395,106,9,405,105,6,410,105,9,418,106,9,423,105,9,426,106,7,125,109,9,130,111,9,135,110,9,139,109,9,143,109,9,148,109,9,152,110,9,161,111,6,164,110,7,174,110,8,183,110,8,187,110,7,196,110,6,201,110,8,209,111,8,213,110,8,222,111,7,231,111,7,236,110,7,240,111,9,266,109,5,288,109,8,292,109,8,297,109,8,301,110,9,306,110,9,311,110,8,314,109,9,319,110,8,323,109,8,341,110,9,346,111,8,350,109,8,363,111,8,367,110,6,381,110,5,385,110,7,390,110,7,398,109,6,402,110,9,408,110,9,420,110,9,424,110,9,429,110,9,433,110,9,119,115,8,124,114,9,128,114,9,132,114,9,136,114,8,140,115,9,159,114,6,163,114,4,168,114,5,185,114,7,189,115,7,193,115,8,198,114,8,203,115,8,206,114,7,215,114,4,220,114,5,229,115,8,233,115,8,238,114,5,255,114,4,273,114,7,277,114,8,282,114,7,286,115,7,290,115,9,295,114,9,304,114,8,308,115,9,317,114,9,321,115,9,326,115,7,339,114,6,344,115,9,348,115,7,356,114,8,361,114,6,365,114,8,370,115,8,374,114,8,382,114,7,409,114,9,414,115,9,419,114,9,422,114,9,427,114,9,431,115,9,436,115,9,113,119,7,116,118,7,121,119,9,130,119,9,134,118,9,139,119,7,148,119,6,151,119,6,156,119,7,161,118,5,174,119,4,183,119,6,187,118,5,196,118,6,200,118,7,205,119,6,208,118,7,218,118,4,236,119,5,248,119,3,266,118,2,271,119,4,280,119,7,283,119,7,288,120,8,292,119,8,297,118,8,307,119,8,310,119,8,315,119,9,323,120,8,328,119,8,332,118,7,337,119,7,350,119,7,354,119,8,359,118,8,362,119,7,367,119,7,371,119,8,380,119,8,385,119,8,390,119,7,394,119,7,398,119,7,402,119,7,416,119,9,421,119,9,425,120,9,429,119,9,434,118,9,110,123,6,115,123,9,119,122,8,123,122,9,127,123,9,132,123,7,141,124,9,145,124,8,150,123,7,168,124,5,172,123,7,185,123,6,189,123,5,194,124,5,198,124,5,225,123,3,242,123,8,246,124,8,251,123,8,259,124,4,264,123,6,273,123,8,286,123,8,295,124,9,304,123,9,308,123,8,312,123,8,317,123,8,321,123,8,325,124,8,334,124,8,339,124,8,342,123,8,348,123,7,351,123,6,356,123,8,361,123,8,365,124,8,369,124,7,373,124,8,383,122,8,387,124,8,392,123,8,395,123,8,400,123,7,405,124,8,409,123,7,414,123,7,418,122,9,423,123,9,427,124,9,431,123,9,435,124,9,440,124,8,107,128,1,112,127,8,117,128,7,125,128,9,130,127,9,134,128,9,139,127,8,152,128,9,156,128,8,173,128,7,183,128,8,209,127,4,219,128,5,235,128,3,240,127,6,245,127,9,248,127,9,258,127,8,262,127,5,270,127,8,275,128,9,279,127,9,284,128,9,288,128,9,292,127,9,296,128,9,302,127,8,306,128,9,311,127,9,315,128,9,319,127,8,323,128,8,328,127,8,333,127,8,341,128,7,346,128,8,349,127,8,359,128,8,367,128,8,375,127,8,381,128,7,390,127,8,394,127,8,397,128,8,402,128,8,407,128,8,411,127,7,416,127,8,421,128,9,424,127,9,429,128,9,433,128,9,437,128,9,106,131,8,110,133,9,114,132,7,119,132,8,123,132,9,132,132,9,141,133,8,145,133,7,149,132,6,154,131,7,158,133,6,167,133,8,172,131,7,176,132,8,180,132,8,189,132,8,207,133,6,212,132,7,216,132,8,220,133,9,224,132,9,233,132,9,237,131,9,242,131,9,247,132,9,250,131,9,255,132,9,259,131,9,264,132,9,268,132,9,272,133,9,277,132,9,282,132,9,286,131,9,291,133,9,300,133,9,303,133,9,307,132,9,313,132,9,317,132,9,321,132,9,325,131,9,330,131,9,335,132,9,339,133,8,343,132,8,352,132,7,357,132,8,361,133,7,369,133,6,373,132,6,379,132,8,383,131,8,387,131,7,392,132,8,396,131,8,400,133,7,405,132,8,409,131,7,414,131,9,419,133,8,423,132,8,426,131,9,430,132,9,435,132,9,440,132,9,104,137,9,108,137,9,112,137,8,122,136,7,130,136,9,134,136,8,139,137,7,156,137,8,161,137,7,169,136,6,173,136,8,182,136,9,187,136,9,191,137,9,200,136,9,204,136,9,209,136,9,213,137,9,218,136,9,222,137,8,226,137,9,230,137,9,235,137,9,240,136,9,245,136,9,248,136,9,253,136,9,258,137,9,261,136,9,266,136,9,270,137,9,274,137,9,284,136,9,288,137,9,293,137,9,298,137,9,301,136,9,306,136,9,311,137,9,314,136,9,318,136,9,328,136,9,331,136,9,346,136,9,349,136,8,354,136,8,358,136,8,367,136,6,376,136,6,380,136,7,384,136,8,399,136,8,403,137,7,412,137,8,416,136,8,420,136,9,424,137,8,429,136,6,434,136,9,437,136,8,443,136,9,447,137,3,101,141,9,106,140,8,115,141,6,118,140,6,122,140,9,127,142,9,133,141,6,136,141,7,140,140,9,150,140,8,158,140,8,168,141,8,171,141,7,180,141,7,189,141,8,194,140,9,199,140,9,203,141,9,207,141,9,210,141,9,215,140,9,221,141,9,224,140,9,228,140,9,232,141,9,237,141,9,242,140,9,246,142,9,251,141,9,255,140,9,259,141,9,264,142,9,268,141,9,273,140,9,277,141,9,281,141,9,285,142,9,290,141,9,294,141,9,300,141,9,303,141,9,307,140,9,313,141,9,322,141,9,326,141,9,330,140,9,335,141,9,340,141,9,343,141,9,348,141,9,352,141,9,356,142,8,365,141,8,369,140,6,378,141,8,383,141,7,387,140,6,392,141,7,401,141,8,406,140,8,414,141,8,418,141,7,423,141,8,426,141,8,432,141,9,436,141,8,440,141,9,445,141,7,449,140,5,103,146,9,108,145,9,116,145,6,122,145,9,125,145,9,129,146,8,134,145,9,139,146,9,143,145,6,147,145,7,157,146,7,165,145,8,170,146,8,174,145,8,183,145,7,192,146,8,195,145,9,200,145,9,205,145,9,208,144,8,217,146,9,223,144,9,226,146,9,231,145,9,236,145,9,239,145,9,244,145,9,249,146,9,253,146,9,257,146,9,261,146,9,267,146,8,271,145,8,274,144,8,279,145,8,284,146,8,293,146,8,297,146,7,301,145,8,305,146,8,315,145,8,318,145,9,324,146,9,328,145,9,332,146,9,336,145,9,341,146,9,346,146,9,358,145,9,362,146,8,367,145,8,377,146,5,381,145,6,390,144,6,394,144,6,399,145,8,403,145,8,407,146,8,411,145,8,416,145,7,421,146,8,430,146,9,434,146,9,442,144,9,102,150,9,105,149,9,110,149,9,114,150,7,119,149,9,124,149,9,128,150,7,133,150,8,140,149,7,145,149,6,158,150,7,171,150,7,175,149,7,180,150,8,185,149,8,189,149,9,193,150,9,198,149,9,202,149,9,207,150,9,215,150,9,220,150,9,225,149,9,228,149,9,242,149,8,252,150,7,255,149,6,259,150,7,273,149,6,278,149,6,281,149,6,291,150,6,307,150,5,325,150,8,330,149,9,334,150,9,343,150,9,347,150,9,352,150,9,356,149,9,362,149,9,366,150,9,369,150,9,388,150,7,396,149,6,401,149,8,414,149,8,418,149,8,423,149,8,430,149,8,435,150,8,440,150,9,444,150,7,448,150,6,99,155,9,103,154,9,108,154,9,117,154,9,121,155,9,125,154,9,129,155,7,133,154,6,138,154,6,144,154,7,147,154,7,165,154,8,169,154,8,174,154,9,183,154,9,187,154,9,191,155,9,196,154,9,200,154,9,205,154,9,209,154,9,213,154,9,222,153,8,245,154,5,258,153,2,267,155,1,284,154,3,306,154,3,314,154,4,328,154,4,333,154,6,341,155,7,345,154,9,349,154,9,354,154,9,358,154,9,363,155,9,368,154,9,372,153,9,376,155,8,381,154,6,389,154,7,398,154,8,406,154,8,411,154,8,415,154,8,420,153,9,425,154,8,429,153,8,433,154,9,441,154,7,446,153,9,452,154,8,96,158,9,100,158,9,105,159,9,114,159,8,119,158,9,123,159,9,128,159,7,132,159,9,136,158,5,145,159,8,149,158,7,153,158,7,163,159,9,167,159,9,172,159,9,177,159,9,181,158,9,184,158,8,190,158,9,193,158,9,197,158,9,202,159,9,206,159,9,212,158,8,215,159,8,220,159,7,228,159,6,233,159,5,242,158,4,317,158,2,347,159,6,352,159,8,356,158,9,360,159,9,365,158,9,370,158,9,373,158,9,379,158,8,383,159,7,388,158,8,392,159,8,396,158,6,400,159,8,410,159,8,414,158,8,418,159,8,422,158,8,427,158,8,431,159,8,435,159,8,440,159,8,445,159,5,449,158,9,453,158,8,457,158,6,100,163,9,107,163,9,112,162,7,117,163,9,122,162,9,125,163,9,129,162,9,138,162,7,147,163,7,152,163,9,155,164,9,161,162,9,165,163,9,178,163,9,183,162,8,186,162,9,191,163,9,196,163,9,204,162,7,209,164,6,214,163,5,222,163,4,253,163,1,271,163,1,297,163,1,354,163,7,358,162,8,364,164,9,368,163,9,372,163,9,380,162,8,385,163,8,398,163,7,406,163,8,411,162,8,416,163,8,420,162,8,424,163,9,429,162,9,433,162,8,438,163,6,442,163,7,446,163,9,452,163,9,455,162,9,96,167,9,101,167,7,105,168,9,114,168,8,123,168,9,128,168,8,132,168,5,149,168,7,159,168,8,162,167,9,168,168,9,172,167,9,176,167,9,181,167,8,185,168,9,188,167,8,199,167,5,207,167,3,220,167,2,233,168,2,251,168,0,286,168,1,330,167,2,334,168,3,343,166,3,369,167,9,375,167,9,379,167,9,383,168,8,387,168,8,391,168,8,396,168,8,409,167,8,422,167,7,427,168,6,431,167,7,436,167,6,445,167,5,449,166,9,453,167,9,458,167,9,95,171,9,98,172,9,103,171,7,113,171,8,116,172,9,121,171,9,126,172,9,129,171,7,139,171,7,143,172,4,148,171,6,156,171,9,160,172,9,165,171,9,169,171,9,173,172,9,177,171,8,182,172,8,200,172,1,209,171,2,214,172,2,227,172,2,235,171,2,249,172,1,258,172,0,298,172,2,302,172,2,315,171,1,332,172,1,336,172,2,346,172,2,358,172,5,363,171,6,368,172,8,372,172,9,376,171,9,381,171,9,385,171,9,390,171,8,395,172,8,402,172,8,412,172,8,419,171,8,424,172,9,429,171,9,434,172,8,437,172,6,442,172,9,446,171,9,452,172,9,459,172,7,97,175,9,102,175,8,109,176,8,114,175,7,119,175,9,124,176,9,128,177,5,140,176,7,145,176,8,150,175,8,153,175,9,159,175,8,163,176,9,172,176,9,181,175,6,229,175,0,238,176,0,290,175,3,299,175,1,338,176,1,361,176,4,365,176,6,369,177,7,375,176,9,379,176,9,383,176,9,387,175,9,392,175,9,396,175,9,401,176,8,404,176,8,427,176,6,432,176,6,440,177,7,445,175,9,449,176,9,453,176,9,461,175,7,466,176,3,95,181,7,104,180,7,120,181,9,130,180,5,134,180,6,139,181,8,144,180,8,152,181,9,156,180,8,161,180,9,165,180,9,169,180,7,173,180,7,179,180,5,187,180,3,209,181,1,217,181,1,262,181,0,279,180,0,350,180,2,358,180,2,376,181,9,380,180,9,386,181,9,390,180,9,393,181,9,398,181,9,402,180,7,406,181,8,411,180,7,416,180,8,425,181,8,429,181,8,447,180,9,451,181,9,455,180,9,460,181,9,469,180,7,93,185,4,96,185,8,101,184,7,106,184,9,109,185,8,115,185,8,118,185,9,123,186,8,128,184,7,131,184,6,136,185,8,140,185,7,144,185,7,149,185,9,154,185,9,159,185,9,163,185,8,181,184,2,251,186,0,259,185,0,268,184,2,366,185,2,379,184,9,383,184,9,388,184,8,392,185,9,395,185,9,400,184,9,404,185,8,413,185,8,418,185,7,422,184,7,426,185,7,440,185,5,452,185,9,457,184,9,462,185,9,470,185,7,90,188,5,94,189,8,98,189,8,104,189,9,112,189,8,116,190,9,120,189,9,125,188,8,135,189,8,139,189,9,142,189,9,147,189,8,152,190,7,156,189,7,170,189,6,173,190,3,297,189,1,332,190,0,355,190,2,384,190,9,390,189,9,393,189,9,398,189,9,403,189,9,408,190,8,411,188,8,415,189,8,425,189,7,429,190,7,433,189,6,442,189,5,451,190,9,456,190,9,459,190,9,464,189,9,469,190,6,97,194,9,101,194,8,105,194,9,111,194,8,119,194,9,128,193,9,132,194,7,141,194,7,146,193,7,149,194,7,154,194,5,158,194,4,162,194,5,181,194,1,185,193,1,194,194,1,299,193,1,374,194,4,378,194,5,388,194,8,397,193,9,401,194,9,404,194,9,409,194,8,414,193,8,418,194,7,422,194,7,426,194,6,430,194,5,436,193,5,440,193,6,444,193,9,449,193,9,457,194,9,462,194,9,467,193,9,471,194,9,91,199,9,95,199,8,107,198,7,113,199,8,116,199,9,122,197,9,125,197,9,129,198,8,134,198,7,148,199,5,156,198,4,160,199,4,199,198,1,376,198,3,381,198,3,385,198,4,390,198,7,394,199,7,403,198,9,407,198,9,412,198,8,421,199,9,424,198,8,434,197,8,438,198,9,443,197,8,447,199,8,456,197,9,460,198,9,464,197,9,88,203,7,92,202,9,96,203,9,101,202,9,105,202,9,114,202,9,120,202,9,124,202,9,127,202,9,133,202,6,140,202,2,145,203,1,150,203,3,295,203,1,304,203,2,322,202,1,325,202,2,347,202,2,352,203,2,379,203,4,387,202,4,400,202,7,405,203,7,409,203,7,413,203,7,417,202,8,423,202,8,428,202,7,436,203,9,441,202,8,444,203,8,449,202,9,453,202,9,458,202,9,467,202,9,471,202,9,91,206,9,95,207,9,99,206,9,104,207,9,109,207,8,112,207,9,116,207,9,120,207,9,125,207,7,130,206,6,134,208,1,161,207,0,179,206,2,182,206,2,205,207,1,271,207,1,293,207,0,315,207,2,320,206,1,332,206,1,341,207,3,355,207,1,408,207,7,411,207,8,416,207,8,421,207,8,433,207,8,438,207,9,443,207,9,446,206,8,451,206,9,455,208,9,460,206,9,464,207,9,473,207,0,477,208,5,88,211,9,93,211,9,97,212,9,106,211,9,109,211,8,114,211,9,119,212,9,124,212,9,127,212,7,259,211,1,264,211,1,382,211,2,387,212,3,395,211,3,401,212,5,405,210,7,409,211,6,414,211,7,418,210,7,422,212,8,426,211,8,431,210,8,435,211,8,439,211,9,444,211,9,448,212,9,453,211,9,458,211,9,462,211,9,467,211,8,471,212,9,476,210,9,86,215,8,103,215,9,108,216,8,113,216,9,116,215,9,121,215,9,125,216,7,319,216,0,349,215,2,372,215,2,385,216,2,393,215,3,407,215,5,412,215,5,415,216,6,420,215,7,425,215,6,430,216,7,434,215,8,438,216,8,447,215,9,451,215,9,455,216,9,459,216,9,464,216,9,469,216,9,474,215,9,88,220,9,92,220,9,97,220,9,101,220,9,105,219,9,110,220,9,114,220,9,118,220,8,123,220,6,127,220,3,167,220,1,259,220,0,277,220,1,307,221,1,317,220,2,326,220,2,343,221,3,352,219,2,366,219,2,374,220,2,400,220,3,427,220,7,432,219,8,445,220,8,449,219,9,453,220,9,458,219,9,462,219,9,467,220,9,471,221,9,475,221,5,86,224,9,90,225,9,94,224,9,99,225,9,103,225,9,107,224,9,112,224,9,116,225,8,121,225,6,130,224,3,156,224,1,178,225,1,192,225,1,222,224,1,239,224,2,310,225,0,327,225,2,346,225,3,358,225,3,394,224,1,411,224,4,424,224,7,428,224,7,434,224,7,437,224,6,442,224,8,447,225,8,451,224,9,455,225,9,460,224,9,464,225,9,468,225,9,472,225,5,478,225,1,84,228,4,88,228,9,93,228,9,96,228,9,102,229,9,106,228,8,114,228,8,119,229,6,128,229,3,171,229,1,181,228,2,216,229,1,225,229,2,243,229,1,264,229,0,357,229,3,370,228,2,410,229,3,419,229,6,422,229,6,427,230,7,435,228,7,444,228,7,449,229,8,453,229,9,457,229,9,462,229,9,467,228,9,471,228,9,95,234,9,99,233,9,103,233,7,107,233,6,126,233,4,179,233,2,183,233,1,196,233,1,201,233,2,235,233,2,292,233,0,305,233,3,368,234,2,377,234,1,385,234,0,407,234,1,412,233,2,416,234,3,421,233,5,429,233,7,433,232,7,450,234,8,456,233,9,460,233,9,464,234,9,469,233,9,472,234,9,477,233,8,83,237,2,88,238,9,92,238,9,97,237,9,111,238,8,115,238,9,119,237,8,124,237,6,128,237,3,154,237,1,158,237,1,162,238,1,225,238,1,233,238,3,238,237,7,277,237,0,343,238,0,365,238,3,370,237,2,427,238,6,431,238,7,435,238,7,440,238,6,444,238,8,449,238,8,454,237,9,458,237,9,463,238,9,467,238,9,471,238,9,476,237,3,86,241,5,90,241,9,95,241,9,99,242,9,104,241,7,112,242,8,130,242,3,151,242,0,169,242,2,195,242,1,235,243,1,297,242,0,358,242,0,363,242,1,407,243,1,412,241,1,421,243,5,425,243,5,433,242,7,438,242,7,446,243,7,451,242,8,464,242,9,469,242,9,478,243,9,88,247,9,92,246,9,97,246,9,100,247,9,105,247,8,109,246,7,115,246,9,123,247,7,137,246,1,215,246,2,229,247,0,273,247,1,291,247,0,414,247,1,418,247,4,423,246,7,431,246,7,436,246,7,439,246,6,444,246,8,449,247,7,453,246,7,462,247,9,466,247,9,85,251,4,90,251,9,99,250,9,104,250,8,112,251,8,117,250,9,126,251,5,130,251,4,399,251,1,415,250,2,430,251,7,434,252,6,441,250,6,451,251,8,456,250,8,460,251,8,465,251,9,469,251,9,472,251,9,478,251,8,83,256,0,88,256,9,92,255,9,98,256,9,106,255,8,110,255,6,115,255,8,124,255,7,128,256,7,206,256,0,269,255,1,312,255,1,427,255,7,431,254,9,436,255,9,453,254,8,458,255,9,462,255,9,466,255,9,471,256,9,476,255,9,90,260,9,95,260,9,99,259,8,103,260,9,112,259,7,117,260,8,122,260,7,126,260,8,131,259,5,236,260,0,253,260,0,263,259,1,424,260,7,429,260,8,434,260,8,437,260,7,450,260,8,455,260,8,464,260,9,468,259,9,473,260,9,87,263,9,92,264,9,97,263,9,101,264,9,106,264,8,110,264,7,114,264,8,118,264,8,128,264,6,194,263,0,316,263,1,339,265,2,343,265,5,427,264,5,432,265,8,441,264,8,449,264,8,453,265,9,457,264,7,462,263,9,471,264,9,476,264,6,91,268,9,94,268,9,99,269,9,104,268,9,108,268,9,117,269,7,122,269,9,126,268,6,336,269,6,341,268,6,349,268,7,359,268,6,371,269,6,381,268,5,438,269,9,446,268,8,451,268,8,456,268,9,464,268,9,468,269,9,472,268,9,89,273,4,93,273,9,96,272,9,102,273,9,105,274,9,110,272,9,115,273,9,122,272,9,211,272,5,251,273,1,299,273,2,312,273,3,335,273,6,339,273,8,344,273,9,352,273,8,356,274,8,360,272,8,369,273,7,373,273,9,388,273,6,391,272,9,396,272,6,431,272,4,436,272,9,440,272,8,445,272,8,449,273,8,457,273,9,462,272,9,466,273,9,471,273,9,475,273,8,94,277,9,99,277,9,103,277,9,108,277,9,113,277,9,117,277,9,126,278,4,130,277,0,187,277,6,201,277,7,213,278,5,284,278,2,301,277,1,310,277,4,314,278,6,324,277,4,332,278,7,336,278,9,341,277,9,345,278,8,350,278,9,358,276,8,363,278,7,372,278,9,381,277,9,385,277,9,390,277,9,394,278,9,398,277,8,402,278,7,438,277,9,442,277,9,446,277,8,455,278,9,461,277,9,465,277,9,469,277,9,473,278,9,93,281,5,97,282,9,101,282,9,106,281,9,109,282,9,115,282,9,119,282,8,172,281,3,176,282,6,185,281,9,194,282,3,202,282,8,207,282,5,313,282,7,317,281,5,321,282,6,330,282,8,335,281,9,339,281,9,343,282,9,347,281,9,352,281,9,356,281,9,360,282,9,365,281,9,374,281,9,378,281,9,383,282,9,388,282,9,397,282,9,400,282,9,409,281,9,431,281,0,440,281,9,445,281,9,449,281,8,454,281,9,457,282,8,461,282,9,467,281,9,475,282,4,95,286,9,100,286,9,104,285,9,108,285,9,113,286,9,116,285,7,122,286,1,143,286,1,148,285,6,156,285,5,165,286,8,170,286,8,174,286,5,178,285,9,183,286,9,188,287,9,192,286,9,196,286,9,200,286,9,204,286,8,209,286,8,214,286,7,231,286,4,236,286,4,240,287,4,253,286,2,261,286,4,270,286,1,288,286,2,293,286,3,298,286,4,302,286,4,306,287,5,310,287,7,328,286,9,332,286,8,336,287,9,340,286,9,345,286,9,349,286,9,355,287,9,358,286,9,363,286,9,368,286,9,371,286,9,377,286,9,380,287,9,385,287,8,389,286,9,393,287,9,398,285,9,403,286,9,411,286,9,415,286,9,421,285,4,442,285,8,447,286,9,451,286,8,456,287,9,459,286,9,464,286,9,468,286,9,473,286,8,92,290,9,97,290,9,101,291,9,105,290,9,111,290,9,115,290,9,144,291,6,150,290,7,158,291,9,167,291,8,171,290,8,176,291,9,181,290,9,189,290,9,194,290,9,198,290,9,202,290,9,206,290,9,211,290,9,216,291,9,224,290,6,229,291,8,233,290,7,238,290,6,282,291,3,291,291,3,294,290,4,299,290,4,304,291,4,308,291,5,316,291,8,326,291,7,329,291,8,339,290,9,343,290,9,353,291,9,357,290,7,360,290,6,366,290,6,378,290,7,396,291,7,400,290,9,405,290,9,410,290,9,414,291,7,449,291,9,453,290,9,457,291,9,463,290,9,467,291,9,95,294,9,103,295,9,108,295,9,112,295,9,135,295,7,139,295,8,143,295,7,151,295,9,156,295,9,160,295,9,166,295,9,169,295,9,174,294,9,178,295,9,183,294,9,187,295,9,191,294,9,196,294,9,200,294,9,205,295,9,208,294,9,214,295,8,218,295,7,222,295,6,227,295,7,231,294,9,235,294,9,244,294,4,274,295,4,279,295,3,284,294,3,301,295,4,306,295,5,315,295,8,319,294,7,332,295,7,345,295,7,349,295,7,354,295,6,358,295,5,363,295,4,368,295,4,372,294,4,376,295,4,381,295,4,386,295,3,402,295,6,407,294,7,411,294,7,415,295,6,434,295,0,441,295,6,446,294,8,455,296,9,461,294,9,463,294,9,469,295,9,106,299,9,110,299,9,114,299,7,127,299,3,131,299,6,142,299,8,145,299,8,149,300,9,155,300,9,159,299,9,163,300,9,168,299,9,171,299,9,175,299,9,181,298,9,184,299,9,190,300,9,193,299,9,198,299,9,202,300,9,207,298,9,211,299,9,216,299,9,225,299,7,228,299,7,238,299,8,242,300,5,260,299,3,264,300,4,269,299,3,273,300,5,290,299,4,295,300,5,304,299,6,317,299,7,320,299,7,326,299,7,330,299,7,338,299,7,343,299,7,347,299,7,353,300,7,357,300,5,405,299,4,410,299,5,413,299,6,418,299,6,422,299,5,444,300,8,449,300,9,453,299,9,458,299,9,463,300,9,467,299,9,99,303,9,104,303,9,107,303,9,113,304,9,117,303,3,129,303,4,139,304,9,143,304,9,147,303,9,151,304,7,161,304,7,166,303,8,174,303,7,178,304,7,182,303,7,187,304,6,191,303,6,196,303,7,201,304,8,213,303,8,218,304,7,222,304,8,226,304,7,231,303,7,235,303,7,240,303,8,253,303,4,270,304,5,283,304,5,292,304,5,296,304,5,301,303,5,310,303,7,314,304,7,318,304,7,324,304,7,332,304,6,375,303,4,393,303,6,403,303,7,407,304,8,415,303,9,420,304,9,424,304,9,428,304,9,434,303,9,438,303,9,447,303,8,451,303,9,455,303,9,459,304,9,464,303,9,469,303,9,97,309,7,101,308,9,105,309,9,110,309,9,128,308,6,132,309,6,136,308,8,141,308,8,150,308,6,155,308,5,194,307,5,203,307,7,215,308,8,220,308,7,228,308,7,238,308,6,242,308,7,247,308,6,260,308,4,264,307,4,278,307,4,281,308,5,291,307,5,303,308,6,313,308,9,352,309,9,357,309,9,361,308,9,365,308,6,369,309,5,374,309,8,391,308,5,406,308,9,410,308,9,418,308,9,427,308,9,441,308,9,453,308,9,458,308,9,462,308,9,466,308,9,100,313,7,103,312,9,108,313,9,113,312,9,126,312,4,129,312,5,134,313,6,138,313,5,148,313,4,152,312,1,240,312,9,245,313,7,261,312,4,275,312,3,284,313,3,296,312,4,306,312,1,323,312,9,328,313,9,332,312,9,340,312,3,376,313,7,381,312,4,386,313,4,412,313,3,424,313,9,428,312,9,433,312,9,437,312,9,442,312,9,455,312,9,460,312,9,465,312,9,101,317,9,105,317,9,110,316,9,114,316,4,128,316,2,145,317,5,149,316,5,163,317,6,166,317,8,175,316,9,180,317,8,184,316,8,193,317,9,202,316,8,207,317,8,211,317,6,221,317,4,229,317,6,234,317,6,238,317,4,242,318,0,274,317,2,295,317,8,299,317,9,303,316,6,313,316,9,317,317,8,322,317,8,326,317,8,330,317,8,365,317,0,379,317,3,383,317,6,386,317,8,396,317,5,401,317,4,405,317,3,409,317,3,414,318,3,431,317,8,435,317,9,440,317,9,458,317,9,463,317,9,104,322,9,108,321,8,112,322,6,121,322,7,131,322,8,133,322,9,139,321,9,143,321,9,174,321,3,178,321,7,205,321,2,214,322,6,222,321,9,226,322,9,232,321,9,245,321,7,248,321,8,253,321,8,258,322,7,262,321,6,266,321,9,270,322,9,275,321,9,279,322,9,283,321,9,288,321,9,292,321,9,298,322,8,306,321,9,314,321,7,319,321,8,323,321,8,359,322,9,362,321,9,368,322,8,371,321,5,381,321,4,394,321,8,403,321,4,420,322,4,429,322,9,433,321,9,438,321,9,442,322,7,455,322,7,460,321,9,105,325,9,110,326,9,115,326,9,120,326,9,123,325,9,127,325,9,153,325,2,167,325,8,189,325,0,207,325,3,215,325,4,220,325,7,225,326,8,233,326,9,238,326,9,242,326,9,247,325,7,255,326,8,260,326,8,265,326,9,269,326,9,272,325,9,277,325,9,282,326,9,287,325,9,290,325,9,294,326,9,299,325,9,308,326,5,312,326,8,343,326,9,347,325,5,360,325,9,366,326,9,369,325,9,374,326,9,379,326,8,388,325,4,397,326,9,401,326,5,409,326,4,414,326,3,422,326,4,427,325,2,432,326,9,435,325,9,439,326,9,445,325,9,457,325,9,463,326,9,104,330,9,108,330,9,111,330,9,116,331,9,121,331,9,161,331,9,182,330,5,187,330,7,192,330,7,231,330,6,235,331,6,239,329,7,245,331,7,249,331,7,253,330,8,266,329,9,270,330,9,275,330,9,279,329,9,283,331,9,289,331,9,293,329,9,306,329,4,310,331,7,332,331,9,337,330,9,346,329,9,349,330,4,354,330,9,358,330,9,363,330,9,367,330,9,372,330,9,377,330,9,380,330,9,384,330,9,416,329,4,424,331,4,433,330,9,438,330,9,447,330,9,459,329,9,106,335,9,110,334,9,114,334,9,119,335,9,136,335,1,150,334,4,154,334,8,175,334,9,180,335,8,185,334,9,190,335,9,194,334,8,198,334,9,207,335,9,212,334,9,215,335,6,221,334,9,243,335,5,255,335,9,260,335,9,264,334,9,269,334,9,273,335,9,278,335,9,281,334,9,285,335,9,290,334,9,294,335,9,299,335,4,329,334,7,347,335,9,353,334,9,356,335,9,361,334,9,365,334,9,369,335,9,374,335,7,387,334,9,392,334,9,397,334,9,400,334,6,432,335,8,435,334,9,440,334,9,444,334,7,448,334,9,454,335,2,104,339,8,109,339,9,112,338,9,152,339,9,161,339,2,165,339,6,170,338,9,174,339,8,177,339,3,182,338,9,191,339,9,200,338,9,204,338,9,218,339,1,227,339,9,230,339,8,249,339,5,253,339,9,258,339,9,262,339,9,267,339,9,283,338,9,288,340,9,292,339,9,298,338,9,305,339,5,320,338,6,324,338,9,328,339,8,350,339,9,353,339,9,359,338,9,363,339,9,367,339,9,372,338,9,376,338,1,389,339,9,394,340,9,398,339,9,403,339,7,434,339,9,438,339,9,442,338,6,447,339,9,451,338,9,106,343,7,111,343,9,115,344,9,141,344,2,150,343,5,154,343,4,162,344,9,167,342,9,185,343,9,190,343,9,194,343,9,197,343,9,203,344,9,206,344,9,212,343,9,220,344,3,237,343,4,251,343,9,256,343,9,269,343,9,277,344,9,282,343,9,286,343,9,291,343,9,294,343,9,299,343,7,304,344,5,312,343,7,317,343,6,321,343,8,326,343,8,339,344,2,351,344,9,357,342,9,362,343,9,366,344,9,369,343,6,383,344,7,392,343,7,396,343,8,405,343,7,409,343,6,419,343,4,423,342,4,428,344,3,435,343,9,439,344,8,444,343,6,449,343,9,453,344,9,471,343,7,475,343,4,480,343,4,108,348,9,113,347,9,117,347,9,134,348,2,147,347,4,151,347,5,156,348,9,160,348,9,165,347,9,170,348,5,187,347,9,191,347,9,195,348,9,201,348,9,205,347,9,210,348,9,223,348,3,227,348,5,253,348,9,258,348,9,266,347,8,283,348,6,288,348,9,292,348,9,297,348,9,310,347,7,314,347,8,319,347,7,324,348,4,345,348,4,355,347,3,368,348,5,372,347,5,384,347,6,390,348,7,394,348,7,398,347,6,415,347,4,420,348,4,434,348,9,438,348,9,451,347,9,455,348,9,481,348,8,487,348,6,110,351,9,115,352,9,136,352,2,150,352,6,154,351,6,159,352,8,162,351,6,167,352,6,171,353,6,176,352,4,194,352,9,198,353,9,202,353,9,207,351,8,212,351,5,216,352,8,220,352,7,229,352,4,242,351,4,246,353,2,251,352,9,256,353,9,259,353,9,278,352,0,290,351,9,295,352,9,299,351,9,312,352,6,321,352,7,325,353,5,329,352,6,335,351,7,339,352,6,342,352,6,348,353,5,352,351,5,356,353,6,374,352,6,379,351,5,382,353,6,391,353,6,395,351,6,400,351,7,405,351,6,410,352,5,432,352,9,435,352,9,452,352,9,457,352,7,467,352,4,480,352,8,484,352,9,113,356,9,117,356,9,130,356,3,156,357,3,169,357,6,174,356,6,204,357,5,208,357,5,222,356,7,227,356,5,232,357,3,235,356,4,249,357,9,258,357,9,275,356,0,292,356,9,297,357,9,301,356,9,324,357,6,331,356,3,336,357,4,341,356,5,355,357,5,376,357,5,385,357,5,402,356,5,407,356,5,421,357,3,434,356,9,438,356,8,451,357,2,455,356,8,464,356,5,469,356,6,478,357,7,481,357,9,96,361,4,101,361,3,110,361,9,114,360,9,119,361,9,158,360,4,162,360,4,181,360,4,189,360,5,194,361,6,198,360,7,203,360,7,207,361,6,211,361,7,216,360,6,224,361,2,233,361,3,237,361,2,251,361,9,295,361,9,298,361,9,304,361,9,322,361,2,326,361,5,330,361,5,334,361,5,338,361,4,347,361,4,370,361,7,378,360,7,383,361,7,388,360,7,409,361,3,417,360,3,432,361,9,436,361,9,453,362,9,480,360,9,484,361,9,90,365,9,112,365,9,117,365,9,121,365,3,144,365,4,156,366,4,170,365,5,191,365,5,195,365,4,208,365,4,214,366,4,248,365,9,253,365,9,301,365,9,306,365,9,309,366,2,328,364,2,333,366,5,354,366,5,372,365,4,377,366,4,389,365,4,407,365,3,430,364,9,433,366,9,455,366,8,460,365,5,469,365,6,472,366,4,477,366,8,482,365,9,92,369,9,97,370,9,102,370,3,118,369,9,137,370,4,145,370,5,149,369,5,163,369,4,190,369,5,193,369,5,234,370,0,246,369,9,250,369,9,299,370,9,304,369,9,308,369,9,334,369,4,351,369,3,361,369,4,418,370,1,431,370,9,436,370,7,448,369,0,458,370,5,467,370,6,480,369,9,484,369,9,99,374,9,104,374,3,117,375,9,122,375,9,144,373,5,152,375,5,166,375,3,170,374,3,213,373,2,218,374,1,248,374,9,253,374,6,270,374,0,301,374,9,305,374,9,367,374,2,446,374,0,456,374,7,460,374,5,469,375,5,477,375,9,482,374,9,97,379,7,101,379,9,110,378,5,119,378,9,123,378,9,140,378,4,184,378,2,199,378,3,215,379,1,243,379,9,247,378,9,308,379,9,312,378,9,427,378,9,432,378,9,467,378,5,471,379,4,476,379,8,98,383,8,103,383,4,107,382,3,112,382,5,121,383,9,125,383,4,156,383,2,169,382,1,183,383,1,200,383,1,205,383,1,240,382,7,244,383,9,249,383,4,252,383,0,310,383,9,315,382,9,390,382,0,398,382,0,425,383,9,429,382,9,455,383,9,460,383,9,464,383,6,101,387,8,109,388,2,119,387,9,124,387,9,146,388,2,163,387,2,181,387,1,189,387,1,203,387,1,238,387,8,246,387,3,312,387,9,316,387,9,321,388,6,326,387,2,423,387,9,427,388,9,431,388,1,448,387,2,458,387,9,462,387,8,475,387,6,98,392,4,104,392,4,109,392,3,122,391,9,125,392,9,147,391,1,160,391,1,178,391,1,191,391,0,235,391,9,240,392,9,243,391,2,315,392,9,320,392,9,345,391,0,424,392,9,451,391,3,455,392,9,459,392,9,465,392,7,473,392,4,101,396,5,105,397,3,123,396,9,127,396,9,198,396,0,237,396,9,242,396,9,246,396,0,269,396,0,304,395,1,317,396,9,321,396,9,325,397,9,331,395,9,410,397,5,413,395,9,418,396,9,435,396,2,457,396,9,467,396,7,112,400,8,126,400,4,129,400,9,156,401,0,226,400,9,231,400,9,236,401,9,293,400,0,319,401,7,324,401,9,327,401,7,332,401,9,336,400,9,341,400,9,345,401,9,350,401,9,354,400,9,359,400,9,364,401,7,368,400,7,372,400,7,377,400,9,380,400,9,385,400,9,389,400,9,394,401,9,398,401,9,402,400,9,407,401,8,412,401,0,416,401,0,452,401,1,455,400,4,459,400,7,465,400,7,468,400,6,106,405,5,110,405,6,115,404,6,132,405,9,136,406,7,220,405,9,224,405,9,229,405,9,233,404,9,290,405,0,317,405,3,321,405,8,330,405,7,348,404,4,356,405,9,361,404,9,365,405,9,369,404,9,373,404,9,378,405,9,382,405,9,436,404,2,458,405,6,462,405,8,466,406,6,133,409,9,139,409,9,144,410,7,205,409,9,208,409,9,214,409,9,218,409,9,232,409,8,306,409,1,319,409,2,323,409,8,331,409,6,337,410,6,341,410,3,456,410,3,460,409,7,145,413,9,149,413,9,154,414,9,159,414,9,163,414,9,168,414,9,172,413,9,176,414,9,181,413,9,185,413,9,190,413,9,194,413,9,197,414,9,202,414,9,206,413,9,224,414,7,269,414,0,294,414,2,339,413,4,352,413,3,356,414,2,361,413,2,427,414,4,432,413,4,440,414,4,444,413,2,450,414,5,461,414,8,466,413,6,107,418,5,160,417,7,166,418,8,169,418,9,174,418,9,183,417,3,213,418,1,222,417,9,226,419,8,232,418,5,262,417,1,323,417,1,328,419,9,341,418,2,368,418,4,376,418,2,389,418,2,403,419,1,412,417,1,433,419,3,455,417,7,459,418,6,464,419,7,146,422,1,203,422,4,207,423,5,216,423,6,295,422,4,299,422,5,312,423,1,330,422,9,343,423,0,347,423,1,360,422,2,366,422,3,374,422,4,378,423,3,395,422,6,404,422,4,417,422,3,423,423,3,432,422,2,467,422,1,112,428,4,121,427,2,125,426,2,178,427,3,197,427,4,200,427,5,218,427,2,222,427,4,297,427,5,302,427,5,306,426,5,309,426,3,390,426,2,407,428,3,421,427,4,434,427,4,460,427,4,123,432,3,159,431,3,163,432,3,167,432,4,171,430,5,180,430,4,259,432,3,263,431,3,269,431,3,287,432,3,295,432,5,299,431,5,304,431,5,326,431,2,331,431,6,335,432,4,361,432,1,374,431,0,378,431,2,391,430,2,436,431,2,448,431,6,453,431,6,457,431,7,462,431,6,122,436,4,148,435,3,161,436,3,187,435,1,227,435,3,252,435,4,270,435,4,275,435,3,279,436,3,297,436,5,315,436,4,332,435,6,385,435,2,402,436,3,412,436,3,424,435,3,446,436,7,461,436,6,120,441,4,122,440,4,127,441,3,136,439,3,146,440,2,153,440,3,159,440,1,163,440,3,180,441,2,211,439,0,225,441,2,246,441,5,251,439,6,282,441,4,286,440,5,290,440,5,300,440,9,303,440,9,308,439,9,326,439,5,330,440,9,348,440,1,374,440,1,383,440,3,419,440,3,431,440,3,444,440,6,458,440,7,134,445,4,161,444,1,200,444,1,213,444,1,222,444,0,231,444,5,244,444,9,248,445,9,253,444,9,257,444,9,262,445,9,266,445,6,271,444,6,279,445,6,283,444,6,293,444,9,298,445,9,301,445,9,306,444,9,310,444,9,314,444,9,319,444,9,323,445,9,328,445,9,332,444,0,354,445,2,363,444,2,381,444,2,438,445,2,447,444,8,451,444,5,455,445,6,123,448,3,145,449,2,193,449,1,202,448,1,243,449,8,247,448,9,254,449,9,259,449,9,269,449,9,274,448,7,278,449,7,286,449,8,290,448,9,295,448,9,300,448,9,304,448,9,308,449,9,312,448,9,317,448,9,321,448,9,326,448,9,379,449,2,387,448,3,404,448,4,431,449,4,435,450,3,440,448,4,448,448,6,453,448,5,126,454,5,130,454,4,147,453,3,152,453,2,161,453,2,179,454,2,199,453,1,236,453,5,239,454,9,245,454,9,248,454,9,253,453,9,257,453,9,262,453,9,267,453,9,271,453,9,279,453,8,284,454,9,288,453,9,293,453,9,297,454,8,301,454,9,305,454,9,310,452,9,314,454,9,319,453,9,328,453,5,355,454,2,385,453,2,408,454,3,411,453,5,424,453,3,438,453,3,451,453,6,127,458,6,168,458,2,185,458,2,199,457,2,242,458,5,247,457,8,250,457,7,259,458,6,265,458,3,272,458,6,277,458,9,282,458,8,285,457,9,290,457,9,295,458,9,299,458,8,322,458,5,325,458,4,329,457,1,387,458,4,391,458,3,400,458,5,405,458,5,409,458,5,419,457,4,444,458,7,448,457,3,129,462,5,173,462,1,253,463,3,262,462,3,275,461,3,279,462,5,284,462,6,301,462,6,306,462,6,315,462,5,327,462,3,393,462,3,429,462,4,433,462,4,443,463,6,455,462,1,464,461,0,141,467,3,149,466,2,172,467,2,185,467,2,193,467,1,238,467,2,251,466,2,282,466,4,290,467,3,312,467,5,321,466,4,325,466,3,369,466,2,387,467,4,410,466,4,414,467,4,436,467,4,449,466,2,458,466,1,144,471,4,160,471,2,170,470,3,174,471,3,178,470,3,274,470,4,279,471,5,284,471,4,288,472,2,310,471,3,314,472,6,319,472,4,380,470,3,389,470,4,411,471,4,136,475,4,140,475,4,167,476,3,206,476,0,246,476,2,307,475,3,312,475,3,320,475,2,326,476,3,334,475,2,348,474,2,360,475,2,392,475,4,400,476,4,405,476,6,410,476,4,423,476,4,427,475,5,134,480,5,148,480,4,274,480,5,284,479,3,309,479,2,337,479,3,367,480,4,372,479,3,381,480,4,386,480,4,389,479,4,393,480,5,407,479,6,415,479,4,442,479,4,149,485,4,163,484,3,285,484,2,304,485,1,335,484,3,339,484,5,347,485,5,366,485,2,378,484,3,387,484,4,396,484,5,418,483,5,453,483,2,466,484,1,160,488,4,169,488,5,200,489,2,222,488,2,226,488,3,240,489,1,257,488,3,271,489,4,310,489,5,315,488,5,318,488,2,337,488,4,350,489,7,359,488,4,398,488,6,408,488,4,412,489,5,443,489,4,456,488,2,464,488,1,137,494,0,146,492,3,167,493,5,194,493,2,198,493,2,229,493,2,255,492,6,260,492,6,263,494,6,276,493,5,296,493,6,304,492,6,308,493,6,313,493,6,317,493,7,330,492,4,339,492,5,344,493,6,364,493,3,378,492,3,387,493,5,392,492,4,401,492,6,414,493,5,422,493,4,426,493,5,436,493,5,444,493,4,148,497,4,152,498,5,173,497,5,191,498,2,204,496,3,209,498,3,262,497,6,276,497,4,279,497,5,288,498,5,302,497,6,311,497,6,318,497,7,333,498,8,337,498,7,341,498,8,350,497,8,381,497,3,408,496,5,425,497,4,439,497,4,446,497,3,145,502,3,171,501,3,175,502,5,184,502,2,207,502,4,212,501,4,215,501,4,225,502,3,228,502,4,237,501,6,241,501,6,246,502,7,273,502,6,278,501,5,282,501,4,286,502,6,295,502,7,299,502,7,304,501,7,312,501,8,316,501,7,321,501,7,325,501,8,338,501,9,343,501,9,348,502,9,352,502,9,357,501,6,365,502,3,383,501,3,387,502,4,395,501,5,404,501,5,419,502,4,431,502,6,457,501,2,139,505,0,179,506,2,187,506,2,195,507,3,205,506,4,209,506,5,222,505,7,227,506,7,231,506,7,240,505,8,244,506,7,253,505,6,258,506,6,261,505,6,265,505,6,271,506,6,275,505,7,279,505,6,285,507,6,298,506,8,302,506,9,305,507,9,310,505,9,314,506,9,319,506,9,323,506,9,332,506,9,336,505,9,341,506,9,350,505,9,363,506,3,368,506,4,372,507,3,389,506,4,399,505,5,403,506,4,406,506,5,411,507,5,446,505,3,145,510,0,158,511,4,162,511,5,167,510,4,172,511,4,198,510,4,202,510,4,208,511,4,216,511,9,219,510,9,225,510,9,228,511,9,234,511,9,237,510,9,242,510,9,247,511,9,251,510,9,255,511,9,259,511,9,265,510,9,269,511,9,273,510,9,278,511,9,281,510,9,287,510,9,290,511,9,295,510,9,299,511,8,308,511,6,313,510,6,325,510,6,334,511,6,344,510,5,357,510,6,361,510,4,366,510,4,375,510,4,382,511,4,388,510,4,395,511,5,400,511,5,427,511,4,431,511,3,453,510,4,462,510,3,476,510,0,139,515,1,152,515,4,157,515,5,191,515,3,201,514,4,205,514,3,209,515,6,213,515,7,226,515,5,236,515,9,249,515,7,258,515,3,262,514,4,324,514,5,363,515,5,367,515,4,380,515,4,385,515,4,393,514,5,398,516,4,424,515,5,430,515,3,442,515,4,456,515,4,154,519,4,203,520,3,211,519,6,224,518,6,277,519,0,326,519,4,344,520,5,356,519,4,360,519,5,373,519,4,396,520,5,400,519,5,405,520,6,423,520,4,449,520,5,453,519,5,125,523,2,174,523,4,213,524,5,218,524,5,226,523,3,249,524,3,258,523,1,315,524,3,318,524,4,328,524,3,336,524,4,346,523,3,363,523,5,381,524,5,384,523,4,389,524,5,394,524,6,398,524,5,403,523,6,416,523,4,424,524,4,428,523,4,438,523,4,459,523,3,128,528,2,149,528,0,163,529,4,167,529,5,172,527,5,180,527,4,202,528,4,212,527,5,233,529,3,255,528,4,312,527,5,348,528,1,351,529,3,356,527,3,365,529,4,375,527,5,378,528,4,391,528,5,396,528,6,409,528,4,418,528,5,453,528,5,152,532,0,169,532,5,183,533,4,201,533,4,205,533,3,235,533,3,239,532,2,245,533,2,257,533,4,262,532,4,271,532,3,284,532,4,289,532,3,297,532,4,314,532,4,328,532,6,332,532,5,376,533,5,406,532,4,412,533,5,420,533,3,425,533,4,446,532,5,451,532,5,464,533,1,168,536,5,177,538,6,181,536,5,184,536,5,212,537,3,242,538,3,251,537,3,260,536,3,273,536,5,277,537,5,309,537,4,312,537,7,322,537,6,326,538,5,356,536,4,366,537,5,374,537,5,382,537,4,388,536,5,395,537,4,401,536,4,453,537,4,170,541,5,174,542,7,178,542,6,196,542,5,201,541,4,210,541,4,244,542,3,254,541,5,262,542,7,266,542,5,279,542,4,283,541,2,288,541,3,297,541,6,305,542,8,310,542,8,333,542,3,354,542,4,358,542,5,372,542,6,376,542,6,380,540,5,393,542,4,408,541,4,424,541,4,446,541,5,452,541,4,477,542,0,136,546,1,167,546,3,171,545,4,177,545,6,194,546,5,199,546,4,225,545,3,228,546,2,233,545,2,259,545,7,273,546,9,278,545,9,282,545,9,287,546,9,291,546,9,300,545,9,304,546,9,309,546,9,312,545,8,317,545,6,325,546,5,329,545,4,343,546,3,347,546,4,351,546,5,360,545,6,365,546,7,369,545,6,374,545,6,379,546,5,382,545,6,387,545,5,401,545,4,409,545,4,414,546,3,436,546,4,440,545,4,445,545,4,448,546,4,453,546,3,457,546,2,461,545,2,470,546,1,479,545,1,130,550,1,138,550,1,156,551,0,169,551,2,182,549,4,196,550,5,236,550,3,252,550,4,262,551,7,275,551,9,279,550,9,284,550,9,289,550,9,293,550,9,297,550,9,305,551,8,315,550,6,320,551,5,323,550,5,337,550,3,341,550,5,376,550,6,380,550,4,394,549,5,407,550,5,417,551,4,429,551,4,446,550,4,456,551,3,464,549,2,481,549,0,133,555,2,166,554,0,180,554,4,185,555,5,202,555,3,224,555,6,234,555,5,247,555,3,263,555,4,268,555,6,273,555,7,277,554,8,282,555,9,291,555,8,304,555,7,312,554,5,361,554,7,365,555,7,370,554,7,374,554,6,392,554,5,414,554,3,419,555,4,436,554,4,439,555,4,457,555,2,191,559,5,217,558,6,275,559,5,279,559,5,284,559,8,288,559,8,297,560,6,314,559,3,324,558,4,337,559,5,345,559,5,368,559,7,377,559,6,394,559,5,411,559,3,438,559,4,447,559,4,455,559,3,477,559,1,133,564,1,149,564,1,164,563,0,185,564,5,202,562,5,211,564,4,229,564,3,234,564,5,242,563,3,246,564,3,252,564,4,254,563,4,260,564,5,273,563,4,299,564,2,325,563,3,351,564,5,357,563,5,360,563,5,365,564,7,370,564,7,378,563,5,387,563,5,391,563,5,405,563,5,409,563,3,413,563,4,423,563,4,431,564,4,441,563,4,444,563,4,453,563,3,462,563,2,470,564,1,139,567,2,170,567,0,186,567,4,226,568,5,236,568,5,253,568,4,258,567,2,275,568,4,280,568,3,288,568,2,301,568,2,319,568,4,331,567,3,354,568,6,359,567,6,393,568,5,402,567,5,429,568,4,434,568,4,443,567,4,452,568,3,140,573,2,150,572,1,185,572,3,189,573,4,202,573,7,215,573,6,220,571,5,233,573,5,238,572,4,246,573,3,251,572,4,291,572,2,326,572,3,330,572,3,334,571,4,339,572,5,342,571,4,347,571,5,357,572,6,369,572,6,378,571,5,383,572,5,387,572,5,397,573,5,401,573,5,413,572,4,418,573,4,423,572,3,428,572,4,439,573,4,444,572,4,449,572,3,147,577,1,183,577,3,187,577,3,205,577,6,209,577,6,218,576,6,221,577,5,230,576,3,236,576,2,244,576,3,249,577,3,301,576,2,324,576,2,341,576,5,358,577,4,363,576,6,368,577,5,381,577,5,385,577,6,398,576,5,412,576,3,415,576,4,421,576,4,437,577,4,442,577,3,464,576,2,473,577,1,153,581,1,207,580,5,211,581,8,221,580,4,234,581,3,264,581,4,278,581,2,303,580,2,308,580,3,317,581,1,326,580,4,344,581,5,356,581,5,361,581,5,365,581,6,373,581,5,379,580,6,384,581,5,395,581,5,466,581,2,480,581,1,151,584,1,204,585,6,209,585,7,226,586,2,253,586,2,257,585,4,262,585,3,302,585,3,310,586,2,350,585,4,372,584,6,381,585,6,385,585,6,389,585,5,403,586,4,430,584,4,437,585,4,473,585,2,486,586,1,176,590,0,193,590,3,203,589,6,210,590,8,228,590,4,233,589,5,238,590,1,264,589,4,282,589,1,300,590,5,321,590,5,326,590,4,339,590,6,348,589,5,361,589,5,366,589,7,374,590,6,387,590,6,404,589,4,418,590,3,454,589,3,462,590,3,479,590,1,485,590,1,196,594,3,204,594,5,213,594,8,218,594,9,222,594,4,226,595,5,253,594,4,262,594,5,266,593,5,274,593,3,323,593,4,340,594,6,345,594,5,359,594,7,372,595,6,377,595,7,380,594,6,384,594,5,424,593,4,430,594,4,438,595,4,451,594,3,167,599,1,189,598,3,220,598,9,224,599,7,250,598,5,273,599,5,277,599,4,321,598,5,356,598,8,365,598,6,369,598,7,395,599,5,414,599,3,441,599,3,157,602,1,196,602,3,209,603,5,213,603,7,223,602,9,226,603,8,257,603,6,288,602,3,314,603,5,320,602,5,332,603,5,345,603,8,350,603,7,359,603,7,376,603,6,394,603,5,425,603,4,429,603,4,433,603,4,443,603,2,474,603,2,145,608,1,167,607,1,172,607,1,180,608,2,202,608,3,207,607,3,228,607,9,233,607,9,246,607,7,256,607,4,260,606,6,264,607,5,268,607,6,273,607,5,303,607,5,308,606,6,312,607,7,316,607,7,321,608,7,325,607,8,330,608,7,335,608,7,343,608,7,348,608,7,370,606,6,374,607,6,391,607,5,440,607,3,453,607,3,457,608,3,463,607,3,156,611,1,183,612,3,200,611,2,204,611,3,214,612,3,231,612,9,235,612,9,244,611,7,253,611,7,257,612,6,267,612,5,271,611,6,284,612,5,293,612,5,301,611,7,305,612,7,328,611,8,332,611,8,336,611,7,350,611,7,355,611,7,380,612,5,389,612,5,403,612,4,429,611,4,447,611,2,473,612,2,500,611,1,180,616,3,219,615,4,224,616,5,229,616,5,233,616,8,238,616,7,246,616,8,251,617,8,277,616,7,286,616,7,300,617,6,304,616,7,316,616,7,325,616,8,339,616,7,347,616,7,366,616,6,370,615,6,374,616,6,378,616,5,400,616,4,408,616,4,423,616,4,436,616,3,461,616,3,148,621,1,153,621,1,191,620,3,218,620,3,249,620,8,258,620,9,266,621,9,276,620,8,284,621,7,288,621,7,296,620,8,306,620,9,309,620,8,333,621,7,337,620,6,341,621,6,346,620,6,349,620,6,372,620,6,386,620,5,390,621,5,402,621,4,412,621,4,416,620,3,421,621,4,434,620,3,460,620,3,468,621,3,145,625,1,154,624,2,212,625,3,238,625,5,243,625,6,252,625,8,255,624,9,260,625,8,264,625,8,268,624,9,272,625,9,286,625,8,294,624,8,313,624,7,325,624,7,343,624,6,352,625,6,373,625,6,378,625,6,409,624,4,414,625,3,458,624,3,484,625,1,186,630,3,209,629,2,235,629,4,240,629,4,252,630,7,257,629,8,266,630,8,271,630,9,275,629,8,288,629,8,301,628,7,311,629,6,329,629,7,337,629,6,341,629,6,346,629,6,354,630,6,381,629,5,399,630,4,402,629,4,407,629,4,429,629,3,468,630,3,474,630,2,477,630,2,259,633,6,263,634,8,273,634,8,276,633,7,281,633,7,312,633,7,317,634,7,321,634,7,330,634,6,339,634,6,347,634,5,357,634,5,361,633,6,370,633,5,466,633,3,471,633,2,151,637,1,191,638,3,208,637,2,239,637,3,252,639,5,270,638,7,275,639,8,293,638,7,307,638,7,310,638,7,328,637,7,333,637,6,350,638,5,359,638,5,394,637,4,197,642,3,202,643,2,229,642,2,237,643,3,299,642,6,308,642,6,317,642,6,321,642,6,343,642,5,351,643,5,374,642,4,209,647,2,284,647,6,297,646,6,301,647,6,315,646,6,323,647,6,333,646,5,337,646,5,354,647,5,363,646,5,371,647,4,394,648,4,407,646,4,425,647,4,433,646,1,465,647,3,184,651,3,212,651,2,259,652,3,285,651,6,290,651,6,308,652,6,312,652,5,388,651,4,426,651,9,432,652,9,449,651,2,236,656,2,279,655,5,288,656,6,297,656,6,306,656,6,315,656,6,341,655,5,346,655,5,362,656,4,384,655,4,406,655,4,416,655,4,425,655,3,451,656,1,215,661,2,256,660,3,303,660,6,308,660,6,356,660,4,374,660,4,414,660,4,440,659,9,463,660,2,492,659,1,160,665,9,236,665,3,257,665,3,293,664,4,305,665,6,310,664,6,319,665,5,342,664,6,420,664,3,437,664,9,465,665,1,159,669,9,207,668,2,220,669,1,233,670,3,291,669,4,308,669,5,312,669,5,347,669,5,386,669,4,401,670,4,414,669,4,435,669,3,485,669,1,174,673,2,217,673,2,257,673,3,274,674,3,311,673,5,323,673,5,327,673,5,377,674,4,385,673,4,394,673,4,398,673,4,406,673,4,451,673,8,459,673,9,145,678,8,164,678,2,273,678,3,308,678,4,317,678,5,352,678,4,370,677,4,401,677,4,410,677,4,449,677,7,461,677,9,156,682,2,210,683,3,213,682,2,257,682,2,284,682,3,297,683,3,323,683,5,354,682,4,399,682,4,411,681,4,429,682,2,442,682,8,451,682,6,469,681,6,474,682,6,495,682,0,136,686,6,295,686,3,347,686,4,392,687,4,400,686,4,448,686,7,476,686,5,502,686,4,125,690,6,134,691,4,152,690,8,368,692,4,393,691,4,412,690,4,433,691,2,459,691,5,503,690,6,105,695,5,119,694,6,162,695,1,255,695,3,264,695,3,269,695,4,330,695,4,334,695,4,383,695,4,396,695,4,444,695,7,485,695,5,488,695,5,507,695,6,85,699,3,90,699,6,116,699,5,148,699,4,201,700,2,244,699,2,284,700,4,318,699,3,386,699,4,424,699,3,442,699,3,446,700,9,518,700,6,522,699,6,75,703,4,115,704,5,181,704,2,219,704,3,304,704,3,351,704,3,365,704,4,452,704,5,484,704,4,488,703,5,533,704,6,537,703,7,108,709,5,306,708,3,424,709,3,456,708,5,508,708,4,540,709,6,70,713,5,105,713,4,194,712,2,357,713,3,392,713,4,463,714,4,470,714,6,580,713,5,90,717,4,420,717,3,574,717,6,588,718,6,79,721,4,88,721,4,362,722,4,489,721,5,33,726,6,46,727,5,55,727,5,108,726,8,169,726,0,231,726,3,359,726,4,451,726,4,66,730,3,70,731,4,537,730,4,130,735,4,446,735,7,74,740,9,418,739,2,488,738,9,64,744,9,280,744,3,323,744,3,505,743,9,579,743,4,124,747,1];
 const art=document.getElementById('art'),cv=document.getElementById('cv'),ctx=cv.getContext('2d');
-const INK=[29,29,31],AC=[0,113,227];
-const still=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function hex(v){v=v.trim().replace('#','');return [0,2,4].map(i=>parseInt(v.slice(i,i+2),16))}
+let INK,AC;
+function colors(){const cs=getComputedStyle(art);INK=hex(cs.getPropertyValue('--ink'));AC=hex(cs.getPropertyValue('--sig'))}
+colors();window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',colors);
 let W,H,P=[],f=0,mx=-999,my=-999,run=true;
 function layout(){
   const dpr=window.devicePixelRatio||1;W=art.clientWidth;H=art.clientHeight;
@@ -270,10 +392,13 @@ function layout(){
 }
 function scatter(){for(const p of P){const a=Math.random()*6.283,r=W*.6+Math.random()*W*.5;p.x=p.tx+Math.cos(a)*r;p.y=p.ty+Math.sin(a)*r;p.vx=p.vy=0;p.w=Math.floor(Math.random()*80)}f=0}
 layout();addEventListener('resize',layout);
-function setM(e){const r=art.getBoundingClientRect(),t=e.touches?e.touches[0]:e;mx=t.clientX-r.left;my=t.clientY-r.top}
+const n=P.length.toLocaleString('en');document.getElementById('ro-n').textContent=n;document.getElementById('ro-n2').textContent=n;
+const rx=document.getElementById('ro-x'),ry=document.getElementById('ro-y');
+function setM(e){const r=art.getBoundingClientRect(),t=e.touches?e.touches[0]:e;mx=t.clientX-r.left;my=t.clientY-r.top;rx.textContent=String(Math.round(mx/W*300)).padStart(3,'0');ry.textContent=String(Math.round(my/H*376)).padStart(3,'0')}
+function clrM(){mx=my=-999;rx.textContent=ry.textContent='—'}
 art.addEventListener('mousemove',setM);art.addEventListener('touchstart',setM,{passive:true});art.addEventListener('touchmove',setM,{passive:true});
-art.addEventListener('mouseleave',()=>{mx=my=-999});art.addEventListener('touchend',()=>{mx=my=-999});
-new IntersectionObserver(es=>{run=es[0].isIntersecting;if(run)requestAnimationFrame(frame)}).observe(art);
+art.addEventListener('mouseleave',clrM);art.addEventListener('touchend',clrM);
+new IntersectionObserver(es=>{const was=run;run=es[0].isIntersecting;if(run&&!was)requestAnimationFrame(frame)}).observe(art);
 function frame(){
   if(!run)return;f++;ctx.clearRect(0,0,W,H);const R=Math.max(46,W*.13),G=R*1.6;
   for(const p of P){
@@ -290,6 +415,32 @@ function frame(){
     ctx.beginPath();ctx.arc(p.x,p.y,(.5+p.d*1.15)*Math.max(.8,p.k),0,6.283);ctx.fill()}
   requestAnimationFrame(frame)}
 requestAnimationFrame(frame);
+
+/* ---- Fig. 2: electrons travelling their orbits ---- */
+const atom=document.getElementById('atom'),es=atom.querySelectorAll('.e');
+const orb=[{a:0,t:0,w:.018},{a:60,t:2.4,w:.014},{a:120,t:4.1,w:.011}];
+let arun=false;
+function place(){es.forEach((e,i)=>{const o=orb[i],x=130*Math.cos(o.t),y=46*Math.sin(o.t),c=Math.cos(o.a*Math.PI/180),s=Math.sin(o.a*Math.PI/180);e.setAttribute('cx',(150+x*c-y*s).toFixed(1));e.setAttribute('cy',(150+x*s+y*c).toFixed(1))})}
+function spin(){if(!arun)return;orb.forEach(o=>o.t+=o.w);place();requestAnimationFrame(spin)}
+place();
+if(!still)new IntersectionObserver(x=>{const was=arun;arun=x[0].isIntersecting;if(arun&&!was)requestAnimationFrame(spin)}).observe(atom);
+
+/* ---- Motion: entrance, reveals, scroll progress, rotating word ---- */
+function motion(){
+  if(still||!window.Motion){document.documentElement.classList.remove('m');return}
+  const {animate,inView,scroll,stagger}=window.Motion;
+  const ease=[.2,.8,.2,1];
+  animate('.hero h1 .ln>span',{transform:['translateY(105%)','translateY(0%)']},{duration:.9,delay:stagger(.09,{startDelay:.1}),ease});
+  animate('.hero .rv',{opacity:[0,1],transform:['translateY(18px)','translateY(0px)']},{duration:.7,delay:stagger(.08,{startDelay:.45}),ease});
+  document.querySelectorAll('main section .rv').forEach(el=>inView(el,()=>{animate(el,{opacity:[0,1],transform:['translateY(18px)','translateY(0px)']},{duration:.7,ease})},{amount:.2}));
+  document.querySelectorAll('.sh .rule').forEach(el=>inView(el,()=>{animate(el,{transform:['scaleX(0)','scaleX(1)']},{duration:1.1,ease:[.6,0,.2,1]})}));
+  scroll(animate('.progress',{transform:['scaleX(0)','scaleX(1)']},{ease:'linear'}));
+  const words=[...document.querySelectorAll('.rot>span')];let cur=0;
+  setInterval(()=>{if(document.hidden)return;const a=words[cur];cur=(cur+1)%words.length;const b=words[cur];
+    animate(a,{opacity:[1,0],transform:['translateY(0em)','translateY(-.35em)']},{duration:.35,ease});
+    animate(b,{opacity:[0,1],transform:['translateY(.35em)','translateY(0em)']},{type:'spring',visualDuration:.45,bounce:.2,delay:.12})},2800);
+}
+if(window.Motion)motion();else document.addEventListener('DOMContentLoaded',motion);
 })();
 </script>
 </body>
