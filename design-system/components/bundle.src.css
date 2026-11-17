@@ -116,6 +116,31 @@
 .si-plate figcaption{font-size:14px;line-height:1.5;color:var(--canvas-muted);margin-top:12px}
 .si-plate figcaption b{font:400 15px var(--font-display);text-transform:uppercase;letter-spacing:.03em;color:var(--canvas-ink);margin-right:8px}
 
+/* chips: square toggle buttons over a live canvas, with the formula for what it shows */
+.si-chips{position:absolute;left:3.5%;top:6%;z-index:4;display:flex;flex-wrap:wrap;align-items:center;gap:6px;max-width:60%}
+.si-chip{font:400 14px/1 var(--font-display);text-transform:uppercase;letter-spacing:.05em;padding:7px 11px;border:1.5px solid rgba(236,234,233,.45);border-radius:var(--radius-none);background:rgba(10,8,12,.6);color:var(--bone);cursor:pointer}
+.si-chip:hover{border-color:var(--bone)}
+.si-chip[aria-pressed="true"]{background:var(--bone);border-color:var(--bone);color:var(--ink)}
+.si-chip:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+.si-chip-eq{flex-basis:100%;margin-top:4px;font:400 12px/1.5 var(--font-mono);color:var(--bone-muted);text-shadow:0 1px 2px #000}
+.si-panel>canvas.si-live{cursor:pointer}
+.si-panel--dark{background:#0a0812}
+
+/* lab controls: sliders for a figure's constants, on the canvas */
+.si-lab{margin-top:12px}
+.si-lab summary{display:inline-flex;align-items:center;gap:8px;list-style:none;cursor:pointer;font:400 14px/1 var(--font-display);text-transform:uppercase;letter-spacing:.05em;padding:7px 11px;border:1.5px solid var(--canvas-ink);color:var(--canvas-ink)}
+.si-lab summary::-webkit-details-marker{display:none}
+.si-lab summary::after{content:"+";font-family:var(--font-mono)}
+.si-lab[open] summary{background:var(--canvas-ink);color:var(--canvas-light)}
+.si-lab[open] summary::after{content:"−"}
+.si-lab summary:focus-visible,.si-lab button:focus-visible{outline:2px solid var(--canvas-accent);outline-offset:2px}
+.si-lab__body{display:grid;grid-template-columns:auto minmax(0,1fr) 5ch;align-items:center;gap:8px 12px;margin-top:12px;font:400 11px var(--font-mono);color:var(--canvas-muted);text-transform:uppercase;letter-spacing:.04em}
+.si-lab__body input[type=range]{width:100%;accent-color:var(--canvas-accent)}
+.si-lab__body output{font-variant-numeric:tabular-nums;color:var(--canvas-ink);text-align:right}
+.si-lab__actions{grid-column:1/-1;display:flex;gap:8px}
+.si-lab__actions button{font:400 13px/1 var(--font-display);text-transform:uppercase;letter-spacing:.05em;padding:7px 10px;border:1.5px solid var(--canvas-ink);border-radius:var(--radius-none);background:transparent;color:var(--canvas-ink);cursor:pointer}
+.si-lab__actions button:hover{background:var(--canvas-ink);color:var(--canvas-light)}
+
 /* word ring on ruled paper */
 .si-ring{position:relative;height:clamp(150px,17vw,230px);perspective:1500px;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 15%,#000 85%,transparent);mask-image:linear-gradient(90deg,transparent,#000 15%,#000 85%,transparent)}
 .si-ring-in{position:absolute;left:50%;top:50%;transform-style:preserve-3d}
@@ -131,4 +156,5 @@
 .si-nav__links a:hover{color:var(--red)}
 @media (max-width:560px){.si-nav__links{gap:16px}.si-nav__links a{font-size:16px}.si-nav__name{font-size:20px}}
 
+@media (max-width:760px){.si-panel-wrap>.si-scrawl{display:none}}
 @media (prefers-reduced-motion:reduce){.si-btn,.si-btn .si-ar{transition:none}}

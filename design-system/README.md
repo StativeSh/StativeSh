@@ -66,6 +66,17 @@ The signature visual: an image drawn as a few thousand dots on the canvas, each 
 
 Use `StudioInk.particleFigure` (see `FigurePlate`) and print the update rule and a live readout (`N = …`, cursor x and y) on the canvas.
 
+## Interactive figures
+
+Let visitors touch the maths the page describes. Every interactive figure runs real equations and prints them.
+
+- **Lab controls** (`LabControls`): a square "Lab controls" chip under a figure's equation opens sliders for its constants (spring k, damping c, push radius R). The printed equation shows the live values. Scatter and Reset sit below.
+- **Orbitals** (`OrbitalCloud`): hydrogen 1s, 2p and 3d as point clouds sampled from |ψ|², `tan` where ψ is positive and `lavender` where it is negative. Clicking the canvas steps to the next orbital.
+- **Double slit** (`DoubleSlit`): a live 2D Schrödinger solution with a screen that builds up the fringes in `tan`.
+- **Controls on a canvas** are `si-chip` buttons in the top-left corner: square, uppercase Anton, `bone` when pressed, with the current formula in mono beneath them. Wire them with `StudioInk.chips`. The panel's marker note moves out of their way, and hides under 760px.
+- Every control is a real `<button>` or labelled range input with a visible focus ring; toggle groups use `aria-pressed`; each canvas's `aria-label` says what it currently shows.
+- Under reduced motion, simulations render one settled frame and recompute on demand, shapes switch without animating, and Scatter is hidden.
+
 ## Iconography
 
 - There is **no icon set** and **no logo**. The name is set in Permanent Marker (`t-wordmark`) as the mark; don't draw a logo for it.

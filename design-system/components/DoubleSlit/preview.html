@@ -1,0 +1,19 @@
+<!-- @dsCard group="Figures" height=470 subtitle="two slits, one slit, fire; click to fire at a height" -->
+<div class="si-band si-band--ink">
+  <div class="si-panel-wrap">
+    <div class="si-panel-shadow" data-si-tear="23" aria-hidden="true"></div>
+    <div class="si-panel si-panel--dark" data-si-tear="23">
+      <canvas id="qs" class="si-live" role="img" aria-label="Live simulation: a quantum wavepacket passes through two slits and forms interference fringes"></canvas>
+      <div class="si-chips" role="group" aria-label="Double slit" id="qs-chips">
+        <button type="button" class="si-chip" data-si-chip="2" aria-pressed="true">Two slits</button><button type="button" class="si-chip" data-si-chip="1" aria-pressed="false">One slit</button><button type="button" class="si-chip" id="qs-fire">Fire</button>
+        <span class="si-chip-eq">i ∂ψ/∂t = −½∇²ψ + Vψ, solved live</span>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+StudioInk.init();
+var qs=StudioInk.doubleSlit(document.getElementById('qs'),{slits:2});
+StudioInk.chips(document.getElementById('qs-chips'),function(n){qs.slits(+n)});
+document.getElementById('qs-fire').addEventListener('click',function(){qs.fire()});
+</script>

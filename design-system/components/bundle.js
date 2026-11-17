@@ -111,6 +111,7 @@
     var hn = function (x, y) { return Math.sin(x * 0.11 + Math.sin(y * 0.07) * 2) * 0.5 + Math.sin(y * 0.13 + Math.cos(x * 0.05) * 2) * 0.5; };
     var rgba = function (c, a) { return 'rgba(' + (c[0] | 0) + ',' + (c[1] | 0) + ',' + (c[2] | 0) + ',' + a.toFixed(2) + ')'; };
     var P = [], W = 0, H = 0, f = 0, mx = -999, my = -999, run = true, k = 1;
+    var prm = { k: 0.045, c: 0.85, r: 0 }; // spring k, damping c, push radius in px (0 = automatic)
     var hc = document.createElement('canvas'), hx = hc.getContext('2d'), dirty = true, glowWas = false;
     function strandGeo(p, x, y, d) {
       var u = (x - head.cx) / head.ax, v = (y - head.cy) / head.ay, q = Math.hypot(u, v), rx = u / head.ax, ry = v / head.ay, l = Math.hypot(rx, ry) || 1; rx /= l; ry /= l;
@@ -134,21 +135,22 @@
       canvas.width = hc.width = W * dpr; canvas.height = hc.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); hx.setTransform(dpr, 0, 0, dpr, 0, 0); dirty = true;
       var sc = Math.min(W / BW, H / BH), ox = (W - BW * sc) / 2, oy = H - BH * sc; k = Math.max(0.8, sc / 1.53);
       P.forEach(function (p) { p.tx = ox + p.hx0 * sc; p.ty = oy + p.hy0 * sc; });
-      if (first) P.forEach(function (p) {
-        if (still) { p.x = p.tx; p.y = p.ty; return; }
-        var a = Math.random() * 6.283, r = W * 0.6 + Math.random() * W * 0.5; p.x = p.tx + Math.cos(a) * r; p.y = p.ty + Math.sin(a) * r; p.w = Math.floor(Math.random() * 80);
-      });
+      if (first) { if (still) P.forEach(function (p) { p.x = p.tx; p.y = p.ty; }); else scatter(); }
+    }
+    function scatter() {
+      P.forEach(function (p) { var a = Math.random() * 6.283, r = W * 0.6 + Math.random() * W * 0.5; p.x = p.tx + Math.cos(a) * r; p.y = p.ty + Math.sin(a) * r; p.vx = p.vy = 0; p.w = Math.floor(Math.random() * 80); });
+      f = 0; dirty = true;
     }
     function frame() {
       if (!run) return; f++; ctx.clearRect(0, 0, W, H);
-      var R = Math.max(46, W * 0.13), G = R * 1.6, hMove = false, hGlow = false;
+      var R = prm.r || Math.max(46, W * 0.13), G = R * 1.6, hMove = false, hGlow = false;
       P.forEach(function (p) {
         if (f > p.w) {
           var s = (still || p.hr) ? 0 : 0.35, sx = p.tx + Math.sin(f * 0.025 + p.ph) * s, sy = p.ty + Math.cos(f * 0.025 + p.ph) * s;
-          p.vx += (sx - p.x) * 0.045; p.vy += (sy - p.y) * 0.045;
+          p.vx += (sx - p.x) * prm.k; p.vy += (sy - p.y) * prm.k;
           var dx = p.x - mx, dy = p.y - my, dd = dx * dx + dy * dy;
           if (dd < R * R && dd > 0.01) { var di = Math.sqrt(dd), kk = Math.pow(1 - di / R, 2) * 6; p.vx += dx / di * kk; p.vy += dy / di * kk; }
-          p.vx *= 0.85; p.vy *= 0.85; p.x += p.vx; p.y += p.vy;
+          p.vx *= prm.c; p.vy *= prm.c; p.x += p.vx; p.y += p.vy;
         }
         if (p.hr) { if (f <= p.w || Math.abs(p.vx) + Math.abs(p.vy) > 0.003) hMove = true; if (!hGlow) { var gx = p.x - mx, gy = p.y - my; if (gx * gx + gy * gy < G * G) hGlow = true; } }
       });
@@ -182,7 +184,171 @@
     layout(); window.addEventListener('resize', layout);
     new IntersectionObserver(function (e) { var was = run; run = e[0].isIntersecting; if (run && !was) requestAnimationFrame(frame); }).observe(canvas);
     requestAnimationFrame(frame);
-    return { count: P.length };
+    return {
+      count: P.length,
+      /* Change the update rule live: {k, c, r}; r = 0 goes back to the automatic push radius. */
+      set: function (o) { if (o.k != null) prm.k = +o.k; if (o.c != null) prm.c = +o.c; if (o.r != null) prm.r = +o.r; dirty = true; },
+      get: function () { return { k: prm.k, c: prm.c, r: prm.r || Math.round(Math.max(46, W * 0.13)) }; },
+      /* Throw every dot out so it springs home under the current constants. */
+      scatter: scatter
+    };
+  };
+
+  /* Lab controls: wires a .si-lab panel (range inputs data-si-lab="k|c|r", outputs data-si-out="k|c|r",
+     buttons data-si-act="scatter|reset", optional [data-si-eq="k|c"] spans in the printed equation) to a figure. */
+  NS.labControls = function (root, figure) {
+    var inputs = {}, outs = {}, eqs = {}, def = { k: 0.045, c: 0.85 };
+    root.querySelectorAll('[data-si-lab]').forEach(function (el) { inputs[el.getAttribute('data-si-lab')] = el; });
+    root.querySelectorAll('[data-si-out]').forEach(function (el) { outs[el.getAttribute('data-si-out')] = el; });
+    document.querySelectorAll('[data-si-eq]').forEach(function (el) { eqs[el.getAttribute('data-si-eq')] = el; });
+    var fmt = { k: function (v) { return (+v).toFixed(3); }, c: function (v) { return (+v).toFixed(2); }, r: function (v) { return Math.round(v) + 'px'; } };
+    function show() { Object.keys(inputs).forEach(function (n) { var v = inputs[n].value; if (outs[n]) outs[n].textContent = fmt[n](v); if (eqs[n]) eqs[n].textContent = fmt[n](v); }); }
+    function sync() { var o = {}; Object.keys(inputs).forEach(function (n) { o[n] = +inputs[n].value; }); figure.set(o); show(); }
+    if (inputs.r) inputs.r.value = figure.get().r;
+    Object.keys(inputs).forEach(function (n) { inputs[n].addEventListener('input', sync); });
+    show();
+    var sc = root.querySelector('[data-si-act="scatter"]'), rs = root.querySelector('[data-si-act="reset"]');
+    if (sc) { if (reduced()) sc.hidden = true; else sc.addEventListener('click', function () { figure.scatter(); }); }
+    if (rs) rs.addEventListener('click', function () {
+      if (inputs.k) inputs.k.value = def.k; if (inputs.c) inputs.c.value = def.c;
+      figure.set({ k: def.k, c: def.c, r: 0 }); if (inputs.r) inputs.r.value = figure.get().r; show();
+    });
+  };
+
+  var palette = { tan: [212, 174, 122], lavender: [168, 148, 255], red: [255, 59, 78], deep: '#050505' };
+  var rgbaS = function (c, a) { return 'rgba(' + (c[0] | 0) + ',' + (c[1] | 0) + ',' + (c[2] | 0) + ',' + a.toFixed(3) + ')'; };
+  var rot3 = function (x, y, z, a, b) { var c = Math.cos(a), s = Math.sin(a), x1 = x * c + z * s, z1 = z * c - x * s, c2 = Math.cos(b), s2 = Math.sin(b); return [x1, y * c2 - z1 * s2, z1 * c2 + y * s2]; };
+  function fitCanvas(cv, cx) { var dpr = window.devicePixelRatio || 1, w = cv.clientWidth, h = cv.clientHeight; cv.width = w * dpr; cv.height = h * dpr; cx.setTransform(dpr, 0, 0, dpr, 0, 0); return [w, h]; }
+
+  /* Hydrogen orbitals as point clouds sampled by rejection from the real |ψ|² (r in Bohr radii, θ from the
+     vertical axis), coloured by the sign of ψ (tan +, lavender −), springing from shape to shape.
+       1s: e^(−2r)   2p_z: r² e^(−r) cos²θ   3d_z²: r⁴ e^(−2r/3) (3cos²θ − 1)²
+     Returns {set(name), mode}; names are '1s', '2p', '3d'. */
+  NS.ORBITALS = {
+    '1s': { R: 4.2, max: 1, eq: '|ψ 1s|² ∝ e^(−2r)', d: function (r) { return Math.exp(-2 * r); }, sign: function () { return 1; } },
+    '2p': { R: 13, max: 0.55, eq: '|ψ 2p_z|² ∝ r² e^(−r) cos²θ', d: function (r, ct) { return r * r * Math.exp(-r) * ct * ct; }, sign: function (ct) { return ct > 0 ? 1 : -1; } },
+    '3d': { R: 26, max: 96, eq: '|ψ 3d_z²|² ∝ r⁴ e^(−2r/3) (3cos²θ − 1)²', d: function (r, ct) { return Math.pow(r, 4) * Math.exp(-2 * r / 3) * Math.pow(3 * ct * ct - 1, 2); }, sign: function (ct) { return 3 * ct * ct - 1 > 0 ? 1 : -1; } }
+  };
+  NS.orbitals = function (canvas, opts) {
+    opts = opts || {};
+    var N = opts.points || 1400, ctx = canvas.getContext('2d'), still = reduced(), cache = {}, mode = null;
+    var pos = new Float32Array(N * 3), vel = new Float32Array(N * 3), tgt = new Float32Array(N * 3), sg = new Int8Array(N);
+    var W = 0, H = 0, t = 0, ax = 0, ay = 0, tax = 0, tay = 0, run = false;
+    function sample(name) {
+      if (cache[name]) return cache[name];
+      var o = NS.ORBITALS[name], s = 17 + name.charCodeAt(0) * 101, pts = new Float32Array(N * 3), sgn = new Int8Array(N), sc = 125 / o.R;
+      var rnd = function () { s = (s * 16807) % 2147483647; return s / 2147483647; };
+      for (var n = 0, guard = 0; n < N && guard < 3e6; guard++) {
+        var x = (rnd() * 2 - 1) * o.R, y = (rnd() * 2 - 1) * o.R, z = (rnd() * 2 - 1) * o.R, r = Math.hypot(x, y, z) || 1e-6, ct = -y / r;
+        if (rnd() * o.max > o.d(r, ct)) continue;
+        pts[n * 3] = x * sc; pts[n * 3 + 1] = y * sc; pts[n * 3 + 2] = z * sc; sgn[n] = o.sign(ct); n++;
+      }
+      return (cache[name] = { pts: pts, sg: sgn });
+    }
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      var cx = W / 2, cy = H / 2, u = Math.min(W, H) / 300, F = 520, back = [], front = [];
+      for (var i = 0; i < N; i++) { var v = rot3(pos[i * 3], pos[i * 3 + 1], pos[i * 3 + 2], ax + t * 0.15, ay + 0.25); (v[2] < 0 ? back : front).push([v, sg[i]]); }
+      var dot = function (e) { var v = e[0], s = F / (F - v[2]), d = Math.max(0, Math.min(1, (v[2] + 130) / 260)); ctx.fillStyle = rgbaS(e[1] > 0 ? palette.tan : palette.lavender, 0.25 + 0.6 * d); ctx.beginPath(); ctx.arc(cx + v[0] * s * u, cy + v[1] * s * u, (1.1 + 1.4 * d) * u * s, 0, 6.283); ctx.fill(); };
+      back.forEach(dot);
+      ctx.fillStyle = palette.deep; ctx.beginPath(); ctx.arc(cx, cy, 6.6 * u, 0, 6.283); ctx.fill();
+      ctx.fillStyle = rgbaS(palette.red, 1); ctx.beginPath(); ctx.arc(cx, cy, 5 * u, 0, 6.283); ctx.fill();
+      front.forEach(dot);
+    }
+    function loop() {
+      if (!run) return; t += 0.016; ax += (tax - ax) * 0.06; ay += (tay - ay) * 0.06;
+      for (var i = 0; i < N * 3; i++) { vel[i] = (vel[i] + (tgt[i] - pos[i]) * 0.07) * 0.8; pos[i] += vel[i]; }
+      draw(); requestAnimationFrame(loop);
+    }
+    function set(name) {
+      var s = sample(name); tgt.set(s.pts); sg = s.sg; mode = name;
+      if (still) { pos.set(tgt); draw(); }
+      if (opts.onChange) opts.onChange(name, NS.ORBITALS[name].eq);
+    }
+    var wh = fitCanvas(canvas, ctx); W = wh[0]; H = wh[1];
+    window.addEventListener('resize', function () { var d = fitCanvas(canvas, ctx); W = d[0]; H = d[1]; draw(); });
+    set(opts.mode || '1s');
+    if (!still) {
+      var host = canvas.parentElement || canvas;
+      host.addEventListener('pointermove', function (e) { var r = host.getBoundingClientRect(); tax = ((e.clientX - r.left) / r.width - 0.5) * 1.2; tay = ((e.clientY - r.top) / r.height - 0.5) * -0.9; });
+      host.addEventListener('pointerleave', function () { tax = tay = 0; });
+      new IntersectionObserver(function (e) { var was = run; run = e[0].isIntersecting; if (run && !was) requestAnimationFrame(loop); }).observe(canvas);
+    }
+    return { set: set, get mode() { return mode; } };
+  };
+
+  /* A live double slit: solves i∂ψ/∂t = −½∇²ψ + Vψ (ħ = m = 1) on a grid with Visscher's staggered
+     scheme (R += dt·H·I, I −= dt·H·R), absorbing edges, a barrier with one or two slits, and a screen near
+     the right edge that accumulates |ψ|² into fringes (drawn as tan bars). Returns {fire(y), slits(n)}. */
+  NS.doubleSlit = function (canvas, opts) {
+    opts = opts || {};
+    var NX = 240, NY = 108, DT = 0.18, BX = 90, BW = 3, VB = 6, still = reduced(), ctx = canvas.getContext('2d');
+    var R = new Float32Array(NX * NY), I = new Float32Array(NX * NY), V = new Float32Array(NX * NY), M = new Float32Array(NX * NY), ACC = new Float32Array(NY);
+    var off = document.createElement('canvas'); off.width = NX; off.height = NY; var oc = off.getContext('2d'), img = oc.createImageData(NX, NY);
+    var W = 0, H = 0, nSlits = opts.slits || 2, run = false, steps = 0, norm0 = 1, gain = 1, idle = 0, y0 = NY / 2;
+    var CM = [[10, 8, 18], [52, 40, 92], [224, 69, 123], [247, 235, 210]];
+    for (var y = 0; y < NY; y++) for (var x = 0; x < NX; x++) { var d = Math.min(x, NX - 1 - x, y, NY - 1 - y); M[y * NX + x] = d < 14 ? 1 - 0.06 * Math.pow((14 - d) / 14, 2) : 1; }
+    function barrier() {
+      V.fill(0); var c = NY / 2;
+      for (var y = 0; y < NY; y++) {
+        var open = nSlits === 2 ? (Math.abs(y - (c - 10)) < 3 || Math.abs(y - (c + 10)) < 3) : Math.abs(y - c) < 3;
+        if (!open) for (var x = BX; x < BX + BW; x++) V[y * NX + x] = VB;
+      }
+    }
+    function fire(yy) {
+      y0 = yy == null ? NY / 2 : Math.max(18, Math.min(NY - 18, yy)); var n = 0;
+      for (var y = 0; y < NY; y++) for (var x = 0; x < NX; x++) { var i = y * NX + x, e = Math.exp(-(Math.pow(x - 36, 2) / 98 + Math.pow(y - y0, 2) / 338)); R[i] = e * Math.cos(1.25 * x); I[i] = e * Math.sin(1.25 * x); n += e * e; }
+      norm0 = n; steps = 0; idle = 0; ACC.fill(0);
+    }
+    function step() {
+      var x, y, i;
+      for (y = 1; y < NY - 1; y++) for (x = 1; x < NX - 1; x++) { i = y * NX + x; R[i] += DT * (-0.5 * (I[i - 1] + I[i + 1] + I[i - NX] + I[i + NX] - 4 * I[i]) + V[i] * I[i]); }
+      for (y = 1; y < NY - 1; y++) for (x = 1; x < NX - 1; x++) { i = y * NX + x; I[i] -= DT * (-0.5 * (R[i - 1] + R[i + 1] + R[i - NX] + R[i + NX] - 4 * R[i]) + V[i] * R[i]); R[i] *= M[i]; I[i] *= M[i]; }
+      var sx = NX - 26; for (y = 0; y < NY; y++) { i = y * NX + sx; ACC[y] += R[i] * R[i] + I[i] * I[i]; }
+      steps++;
+    }
+    function view() { var s = Math.max(W / NX, H / NY); return { s: s, ox: (W - NX * s) / 2, oy: (H - NY * s) / 2 }; }
+    function draw() {
+      var mx = 1e-9, tot = 0, i, p;
+      for (i = 0; i < NX * NY; i++) { p = R[i] * R[i] + I[i] * I[i]; tot += p; if (V[i] === 0 && p > mx) mx = p; }
+      gain += (1 / Math.sqrt(mx) - gain) * (steps < 12 ? 1 : 0.15);
+      for (i = 0; i < NX * NY; i++) {
+        var o = i * 4;
+        if (V[i] > 0) { img.data[o] = 236; img.data[o + 1] = 234; img.data[o + 2] = 233; img.data[o + 3] = 255; continue; }
+        var v = Math.min(0.999, Math.pow(Math.sqrt(R[i] * R[i] + I[i] * I[i]) * gain, 0.85)) * 3, k = v | 0, f = v - k, a = CM[k], b = CM[k + 1];
+        img.data[o] = a[0] + (b[0] - a[0]) * f; img.data[o + 1] = a[1] + (b[1] - a[1]) * f; img.data[o + 2] = a[2] + (b[2] - a[2]) * f; img.data[o + 3] = 255;
+      }
+      oc.putImageData(img, 0, 0); var vw = view(); ctx.clearRect(0, 0, W, H); ctx.imageSmoothingEnabled = true; ctx.drawImage(off, vw.ox, vw.oy, NX * vw.s, NY * vw.s);
+      var am = 1e-9; for (var y = 0; y < NY; y++) am = Math.max(am, ACC[y]);
+      var right = Math.min(W, vw.ox + (NX - 14) * vw.s), len = Math.min(W * 0.16, 90);
+      ctx.fillStyle = 'rgba(212,174,122,.9)'; for (y = 0; y < NY; y++) { var w = ACC[y] / am * len; if (w > 0.5) ctx.fillRect(right - w, vw.oy + y * vw.s, w, Math.max(1, vw.s * 0.8)); }
+      ctx.fillStyle = 'rgba(236,234,233,.35)'; ctx.fillRect(right, 0, 1.5, H);
+      return tot / norm0;
+    }
+    function loop() {
+      if (!run) return;
+      if (idle > 0) { if (++idle > 70) fire(); } else { for (var k = 0; k < 6; k++) step(); if (steps > 1500) idle = 1; }
+      var left = draw(); if (idle === 0 && steps > 200 && left < 0.02) idle = 1;
+      requestAnimationFrame(loop);
+    }
+    function settle() { fire(y0); for (var k = 0; k < 470; k++) step(); draw(); }
+    var wh = fitCanvas(canvas, ctx); W = wh[0]; H = wh[1]; barrier();
+    window.addEventListener('resize', function () { var d = fitCanvas(canvas, ctx); W = d[0]; H = d[1]; draw(); });
+    canvas.addEventListener('click', function (e) { var r = canvas.getBoundingClientRect(), vw = view(), gy = (e.clientY - r.top - vw.oy) / vw.s; if (still) { y0 = gy; settle(); } else fire(gy); });
+    if (still) settle();
+    else { fire(); new IntersectionObserver(function (e) { var was = run; run = e[0].isIntersecting; if (run && !was) requestAnimationFrame(loop); }).observe(canvas); }
+    return {
+      fire: function (yy) { if (still) { if (yy != null) y0 = yy; settle(); } else fire(yy); },
+      slits: function (n) { nSlits = n === 1 ? 1 : 2; barrier(); if (still) settle(); else fire(); }
+    };
+  };
+
+  /* Chips: wires a group of buttons with data-si-chip="<value>" so exactly one is aria-pressed, and calls onPick(value). */
+  NS.chips = function (group, onPick) {
+    var btns = group.querySelectorAll('[data-si-chip]');
+    btns.forEach(function (b) { b.addEventListener('click', function () {
+      btns.forEach(function (c) { c.setAttribute('aria-pressed', String(c === b)); }); onPick(b.getAttribute('data-si-chip'));
+    }); });
   };
 
   /* One call for a page: filters on, boil running, every [data-si-tear] torn. */
