@@ -66,7 +66,8 @@ main,footer{position:relative;z-index:1}
 .mega .w{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.02em}
 .mega .ch{display:inline-block}
 .credits{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px 28px;font:400 clamp(20px,2vw,30px)/1 var(--display);text-transform:uppercase;color:var(--tan)}
-.credits small{font-size:.6em;margin-right:.35em;opacity:.9}
+.credits span{display:flex;flex-direction:column;gap:4px}
+.credits small{font-size:.5em;letter-spacing:.06em;opacity:.75}
 
 /* progress + nav */
 .progress{position:fixed;inset:0 0 auto 0;height:3px;background:var(--red);transform-origin:0 50%;transform:scaleX(0);z-index:30}
@@ -137,18 +138,20 @@ figure{margin:0}
 .straddle .scrawl{left:50%;top:calc(clamp(70px,9vw,120px) - .12em);font-size:clamp(26px,3vw,44px);color:var(--ink);transform:translateX(-50%) rotate(-5deg)}
 
 /* experiments */
-.exp{position:relative;padding:clamp(40px,6vw,80px) 0 clamp(56px,7vw,96px)}
+.exp{position:relative;padding:clamp(32px,4.5vw,60px) 0 clamp(36px,4.5vw,60px)}
 .panel-wrap{position:relative}
 .pshadow{position:absolute;inset:0;background:#000;transform:translate(12px,14px)}
 .panel{position:relative;aspect-ratio:16/7.2;overflow:hidden;background:var(--blotch),radial-gradient(70% 90% at 75% 20%,rgba(212,174,122,.22),transparent 60%),radial-gradient(60% 80% at 10% 100%,rgba(168,148,255,.16),transparent 60%),#1C1A19;background-blend-mode:soft-light,normal,normal,normal;background-size:420px,auto,auto,auto;transition:transform .6s cubic-bezier(.2,.8,.2,1);will-change:transform}
 .panel canvas{width:100%;height:100%;display:block}
-.panel.slit{background:#06070A;display:flex;align-items:center;justify-content:center}
-.panel.slit img{height:100%;width:auto;max-width:100%;object-fit:contain;display:block}
-.panel.slit::before,.panel.slit::after{content:"";position:absolute;top:0;bottom:0;width:30%;z-index:1;pointer-events:none}
-.panel.slit::before{left:0;background:linear-gradient(90deg,#06070A 30%,transparent)}
-.panel.slit::after{right:0;background:linear-gradient(270deg,#06070A 30%,transparent)}
+.panel.slit{display:flex;align-items:flex-start;justify-content:center;padding-top:4.5%;background:var(--blotch),radial-gradient(60% 80% at 50% 50%,rgba(242,165,195,.22),transparent 65%),radial-gradient(50% 70% at 12% 90%,rgba(168,148,255,.2),transparent 60%),radial-gradient(40% 60% at 92% 10%,rgba(212,174,122,.18),transparent 60%),#1C1A19;background-blend-mode:soft-light,normal,normal,normal,normal;background-size:420px,auto,auto,auto,auto}
+.photo{position:relative;display:block;height:64%;aspect-ratio:320/295;border:9px solid var(--bone);border-bottom-width:26px;box-shadow:10px 12px 0 #000;rotate:-2.5deg;background:#06070A}
+.photo img{width:100%;height:100%;object-fit:cover;display:block}
+.photo::before,.photo::after{content:"";position:absolute;top:-16px;width:84px;height:26px;background:var(--blotch),rgba(242,165,195,.85);background-blend-mode:soft-light,normal;background-size:300px,auto;filter:url(#rough)}
+.photo::before{left:-30px;rotate:-28deg}.photo::after{right:-30px;rotate:24deg;background-color:rgba(212,174,122,.85)}
+.photo .cap{position:absolute;left:0;right:0;bottom:-24px;text-align:center;font:400 14px/22px var(--marker);color:var(--ink)}
 .exp .title{position:relative;z-index:2;margin-top:-.52em;padding:0 .04em;text-shadow:6px 8px 0 var(--deep)}
 .exp .panel-wrap .scrawl{right:4%;top:7%;color:var(--bone)}
+.exp .panel-wrap .s-qp{right:auto;left:6%;top:34%;width:min(240px,26%);white-space:normal;line-height:1.15;transform:rotate(-8deg)}
 .exp .credits{margin:22px 0 34px;padding-bottom:22px;border-bottom:1px solid var(--line)}
 .exp .body{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) auto;gap:24px clamp(24px,4vw,56px);align-items:start}
 .exp .body p{margin:0;font-size:clamp(17px,1.4vw,19px);color:#D6D1CC}
@@ -211,8 +214,11 @@ footer .sign{font:400 30px var(--marker);color:var(--red);transform:rotate(-4deg
 @media (max-width:1180px){.me{display:none}}
 @media (max-width:900px){
   .hero{grid-template-columns:minmax(0,1fr);align-items:start}
-  .hero figure{max-width:500px;width:100%;min-width:0;margin:0 auto}
+  .hero figure{order:-1;max-width:380px;width:100%;min-width:0;margin:0 auto}
+  .hero .eq{display:none}
+  .hero{padding-top:36px}
   .exp .body{grid-template-columns:1fr}
+  .s-qp{display:none}
   .exp .ctas{flex-direction:row;align-items:center}
   .also,.notes,.about{grid-template-columns:1fr}
   .panel{aspect-ratio:4/3}
@@ -220,10 +226,13 @@ footer .sign{font:400 30px var(--marker);color:var(--red);transform:rotate(-4deg
 }
 @media (max-width:560px){
   nav.top ol{gap:16px}
+  nav.top ol a{font-size:16px}
+  nav.top ol a i{display:none}
+  nav.top .name{font-size:20px}
   nav.top .hide-sm{display:none}
   .exp ul{columns:1}
   .readout .hide-sm{display:none}
-  .credits{justify-content:flex-start}
+  .credits{display:grid;grid-template-columns:1fr 1fr;gap:16px 20px}
   .nb-head{flex-direction:column;align-items:flex-start;gap:0}
 }
 </style>
@@ -244,7 +253,7 @@ footer .sign{font:400 30px var(--marker);color:var(--red);transform:rotate(-4deg
     <a class="name" href="#top">Shreyas K.</a>
     <ol>
       <li><a href="#work"><i>01</i>Work</a></li>
-      <li class="hide-sm"><a href="#notebook"><i>02</i>Notebook</a></li>
+      <li><a href="#notebook"><i>02</i>Notebook</a></li>
       <li><a href="#about"><i>03</i>About</a></li>
     </ol>
   </div>
@@ -333,9 +342,9 @@ footer .sign{font:400 30px var(--marker);color:var(--red);transform:rotate(-4deg
         <div class="panel-wrap tilt">
           <div class="pshadow torn" data-seed="23" aria-hidden="true"></div>
           <div class="panel slit torn" data-seed="23">
-            <img src="assets/double-slit.gif" alt="A wavepacket passing through two slits and forming interference fringes" loading="lazy" width="320" height="295">
+            <span class="photo"><img src="assets/double-slit.gif" alt="A wavepacket passing through two slits and forming interference fringes" loading="lazy" width="320" height="295"><span class="cap" aria-hidden="true">fig. 3: two slits</span></span>
           </div>
-          <span class="scrawl" aria-hidden="true">checked against the maths</span>
+          <span class="scrawl s-qp" aria-hidden="true">checked against the maths</span>
         </div>
         <h3 class="mega title split" data-c="pink">Quantum Playground</h3>
         <div class="credits rv" data-c="pink">
