@@ -1,0 +1,80 @@
+/* Studio Ink — generated from tokens.json */
+:root, [data-theme="studio"] {
+  --ink: #131313;
+  --bone: #eceae9;
+  --bone-muted: #9c958f;
+  --lede: #c9c4bf;
+  --body-on-panel: #d6d1cc;
+  --muted-on-bone: #6b6560;
+  --line: #2b2a28;
+  --panel: #1c1a19;
+  --deep: #050505;
+  --red: #ff3b4e;
+  --tan: #d4ae7a;
+  --pink: #f2a5c3;
+  --lavender: #a894ff;
+  --sand: #c9bbad;
+  --ruled-line: rgba(19, 19, 19, 0.13);
+  --canvas-light: #f7ebd2;
+  --canvas-mid: #e9d2a6;
+  --canvas-dark: #c9a06e;
+  --canvas-ink: #1b1410;
+  --canvas-muted: #5b4a3c;
+  --canvas-rule: #b39570;
+  --canvas-accent: #b8261f;
+  --fig-skin-light: #f68c60;
+  --fig-skin-deep: #963424;
+  --fig-ink-soft: #3c1e18;
+  --fig-hair-indigo: #34285c;
+  --fig-hair-sheen: #998dce;
+  --fig-glow: var(--red);
+  --shadow-panel: 12px 14px 0 #000000;
+  --shadow-card: 10px 12px 0 #050505;
+  --shadow-note: 9px 11px 0 rgba(19, 19, 19, 0.25);
+  --shadow-button: 5px 5px 0 #ff3b4e;
+  --shadow-button-hover: 7px 7px 0 #ff3b4e;
+  --shadow-photo: 10px 12px 0 #000000;
+}
+:root {
+  --gutter-min: 16px;
+  --gutter: 48px;
+  --wrap-max: 1240px;
+  --section-y: 120px;
+  --block-y: 60px;
+  --gap-lg: 40px;
+  --card-pad: 30px;
+  --gap-md: 26px;
+  --gap-credits: 28px;
+  --gap-sm: 16px;
+  --gap-xs: 10px;
+  --radius-none: 0;
+  --radius-torn: 34px;
+  --radius-torn-sm: 26px;
+  --opacity-grain: 0.05;
+  --opacity-rays: 0.5;
+  --opacity-tape: 0.8;
+  --font-display: "Anton", Impact, "Arial Narrow", sans-serif;
+  --font-sans: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --font-marker: "Permanent Marker", "Comic Sans MS", cursive;
+}
+.t-mega { font-family: var(--font-display); font-size: 200px; line-height: 0.86; font-weight: 400; }
+.t-hero { font-family: var(--font-display); font-size: 122px; line-height: 0.9; font-weight: 400; }
+.t-card-title { font-family: var(--font-display); font-size: 80px; line-height: 0.9; font-weight: 400; }
+.t-statement { font-family: var(--font-display); font-size: 60px; line-height: 1; font-weight: 400; }
+.t-note-title { font-family: var(--font-display); font-size: 42px; line-height: 0.95; font-weight: 400; }
+.t-credit { font-family: var(--font-display); font-size: 30px; line-height: 1; font-weight: 400; }
+.t-list { font-family: var(--font-display); font-size: 26px; line-height: 1; font-weight: 400; }
+.t-button { font-family: var(--font-display); font-size: 19px; line-height: 1; font-weight: 400; letter-spacing: 0.57px; }
+.t-nav { font-family: var(--font-display); font-size: 18px; line-height: 1; font-weight: 400; letter-spacing: 0.36px; }
+.t-lede { font-family: var(--font-sans); font-size: 20px; line-height: 1.55; font-weight: 400; }
+.t-body { font-family: var(--font-sans); font-size: 17px; line-height: 1.55; font-weight: 400; }
+.t-small { font-family: var(--font-sans); font-size: 15px; line-height: 1.5; font-weight: 400; }
+.t-caption { font-family: var(--font-sans); font-size: 14px; line-height: 1.5; font-weight: 400; }
+.t-label { font-family: var(--font-mono); font-size: 12px; line-height: 1.4; font-weight: 400; letter-spacing: 0.48px; }
+.t-equation { font-family: var(--font-mono); font-size: 12px; line-height: 1.7; font-weight: 400; }
+.t-readout { font-family: var(--font-mono); font-size: 11px; line-height: 1.4; font-weight: 400; letter-spacing: 0.33px; }
+.t-hello { font-family: var(--font-marker); font-size: 36px; line-height: 1; font-weight: 400; }
+.t-scrawl { font-family: var(--font-marker); font-size: 32px; line-height: 1; font-weight: 400; }
+.t-sign { font-family: var(--font-marker); font-size: 30px; line-height: 1; font-weight: 400; }
+.t-wordmark { font-family: var(--font-marker); font-size: 24px; line-height: 1; font-weight: 400; }

@@ -1,0 +1,42 @@
+<!-- @dsCard height=340 -->
+<div class="cover">
+  <!--
+    blocks: bone 280×220 (radius-none), red 240×120, tan 200×130, lavender 100×120, pink 60×50; deep slab = shadow-panel offset 12/14
+    arrangement: staggered posters bleeding off the top, right and bottom edges, overlapping like slabs stuck on a wall, all right of x=480
+    pattern: ruled stripes at gap-lg (40px) pitch in ruled-line on the bone block; "notebook" bands are this system's own paper, so the rules are its pattern
+    scales: gap-lg 40 for the rule pitch, card-pad 30 and block-y 60 multiples for block sides, radius-none everywhere (the system is square)
+  -->
+  <svg class="art" viewBox="0 0 960 340" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <defs><clipPath id="paper"><rect x="560" y="-20" width="280" height="220"></rect></clipPath></defs>
+    <rect class="bone" x="560" y="-20" width="280" height="220"></rect>
+    <g class="rule" clip-path="url(#paper)">
+      <line x1="560" x2="840" y1="20" y2="20"></line><line x1="560" x2="840" y1="60" y2="60"></line>
+      <line x1="560" x2="840" y1="100" y2="100"></line><line x1="560" x2="840" y1="140" y2="140"></line>
+      <line x1="560" x2="840" y1="180" y2="180"></line>
+    </g>
+    <rect class="deep" x="512" y="224" width="200" height="130"></rect>
+    <rect class="tan" x="500" y="210" width="200" height="130"></rect>
+    <rect class="deep" x="772" y="164" width="240" height="120"></rect>
+    <rect class="red" x="760" y="150" width="240" height="120"></rect>
+    <rect class="lav" x="870" y="-10" width="100" height="120"></rect>
+    <rect class="pink" x="720" y="300" width="60" height="50"></rect>
+  </svg>
+  <div class="txt">
+    <div class="name">Studio Ink</div>
+    <div class="tag">A painted 2D/3D look for science on the web.</div>
+  </div>
+  <style>
+  .cover{position:relative;width:960px;height:340px;overflow:hidden;background:var(--ink,#131313)}
+  .art{position:absolute;inset:0;width:960px;height:340px}
+  .bone{fill:var(--bone,#eceae9)}
+  .rule line{stroke:var(--ruled-line,rgba(19,19,19,.13));stroke-width:2}
+  .deep{fill:var(--deep,#050505)}
+  .tan{fill:var(--tan,#d4ae7a)}
+  .red{fill:var(--red,#ff3b4e)}
+  .lav{fill:var(--lavender,#a894ff)}
+  .pink{fill:var(--pink,#f2a5c3)}
+  .txt{position:absolute;left:40px;bottom:30px;max-width:440px}
+  .name{font:400 120px/.95 var(--font-display,"Anton",Impact,sans-serif);color:var(--bone,#eceae9);width:min-content}
+  .tag{margin-top:16px;font:400 14px/1.4 var(--font-sans,"IBM Plex Sans",system-ui,sans-serif);color:var(--bone-muted,#9c958f)}
+</style>
+</div>
