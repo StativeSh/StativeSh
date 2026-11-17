@@ -1,0 +1,21 @@
+<!-- @dsCard group="Figures" height=715 subtitle="generated head as a particle figure; move the cursor over it" -->
+<div class="si-band si-band--ink" style="display:flex;justify-content:center">
+  <figure class="si-plate" style="margin:0;width:340px">
+    <div class="si-plate__shadow" data-si-tear="41" data-si-radius="26" aria-hidden="true"></div>
+    <div class="si-plate__bg" data-si-tear="41" data-si-radius="26" aria-hidden="true"></div>
+    <div class="si-readout" aria-hidden="true"><span>Fig. 1</span><span>N = <b id="n">0</b></span></div>
+    <div class="si-figure"><canvas id="fig" role="img" aria-label="A generated head drawn in dots"></canvas></div>
+    <div class="si-eq" aria-hidden="true">v += <i>0.045</i>·(x₀ − x) + F<sub>cursor</sub> &nbsp; v *= <i>0.85</i></div>
+    <figcaption><b>Fig. 1</b>Ink for features, halftone for skin, strands for hair.</figcaption>
+  </figure>
+</div>
+<script>
+StudioInk.init();
+var s=7,rnd=function(){s=s*16807%2147483647;return s/2147483647},pts=[],face=function(x,y){var u=(x-150)/80,v=(y-205)/105;return u*u+v*v};
+for(var i=0;i<30000&&pts.length<2600;i++){var x=60+rnd()*180,y=95+rnd()*220;if(face(x,y)>1)continue;var u=(x-150)/80,v=(y-205)/105,nz=Math.sqrt(Math.max(0,1-u*u-v*v)),light=Math.max(0,-u*.55-v*.45+nz*.7),d=Math.min(.59,Math.max(0,.62-.5*light));if(rnd()>d+.3)continue;pts.push([x,y,d])}
+var blob=function(cx,cy,rx,ry,n,d){for(var i=0;i<n;i++){var a=rnd()*6.283,r=Math.sqrt(rnd());pts.push([cx+Math.cos(a)*rx*r,cy+Math.sin(a)*ry*r,d+rnd()*.1])}};
+blob(122,196,14,7,70,.88);blob(178,196,14,7,70,.88);blob(122,177,21,4,55,.75);blob(178,177,21,4,55,.75);blob(150,264,26,4,70,.78);blob(150,234,7,11,26,.68);
+for(var j=0;j<9000;j++){var hx=45+rnd()*210,hy=40+rnd()*180,hu=(hx-150)/98,hv=(hy-160)/118;if(hu*hu+hv*hv>1||face(hx,hy)<1||hy>205)continue;if(rnd()<.8)pts.push([hx,hy,.6+rnd()*.4])}
+var fig=StudioInk.particleFigure(document.getElementById('fig'),pts,{head:{cx:150,cy:160,ax:98,ay:118},isHair:function(x,y){return y<205&&face(x,y)>1}});
+document.getElementById('n').textContent=fig.count.toLocaleString('en');
+</script>
