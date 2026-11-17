@@ -97,7 +97,7 @@ Let visitors touch the maths the page describes. Every interactive figure runs r
 2. Call `StudioInk.init()` once the page has loaded: it adds the boil and rough filters, starts the boil and tears every element with `data-si-tear`.
 3. Build sections from `.si-band` and the components; every class starts with `si-`.
 
-Not synced from the source: the site's background interference field, light shafts, embers and the 3D atom are page-specific scenes, described here but not packaged; the real portrait's dot data stays in the website.
+Not synced from the source: the site's background interference field, light shafts, embers and the atom's orbit sketch are page-specific scenes, described here but not packaged; the real portrait's dot data stays in the website.
 
 ## Files in this folder
 
