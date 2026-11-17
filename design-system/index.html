@@ -67,7 +67,7 @@ body{margin:0;background:var(--ink);color:var(--bone);font:400 15px/1.5 var(--fo
 
 </div>
 </header>
-<nav class="g-nav" aria-label="Components"><a href="#Band">Band</a><a href="#Button">Button</a><a href="#Card">Card</a><a href="#CreditsRow">CreditsRow</a><a href="#FigurePlate">FigurePlate</a><a href="#HeroTitle">HeroTitle</a><a href="#InkMarks">InkMarks</a><a href="#MegaTitle">MegaTitle</a><a href="#NavBar">NavBar</a><a href="#PinnedPhoto">PinnedPhoto</a><a href="#Scrawl">Scrawl</a><a href="#StraddleTitle">StraddleTitle</a><a href="#TapedNote">TapedNote</a><a href="#TornPanel">TornPanel</a><a href="#WordRing">WordRing</a></nav>
+<nav class="g-nav" aria-label="Components"><a href="#Band">Band</a><a href="#Button">Button</a><a href="#Card">Card</a><a href="#CreditsRow">CreditsRow</a><a href="#DoubleSlit">DoubleSlit</a><a href="#FigurePlate">FigurePlate</a><a href="#HeroTitle">HeroTitle</a><a href="#InkMarks">InkMarks</a><a href="#LabControls">LabControls</a><a href="#MegaTitle">MegaTitle</a><a href="#NavBar">NavBar</a><a href="#OrbitalCloud">OrbitalCloud</a><a href="#PinnedPhoto">PinnedPhoto</a><a href="#Scrawl">Scrawl</a><a href="#StraddleTitle">StraddleTitle</a><a href="#TapedNote">TapedNote</a><a href="#TornPanel">TornPanel</a><a href="#WordRing">WordRing</a></nav>
 <main>
 <section class="g-item" id="Band">
   <header class="g-head"><h2>Band</h2><p>A full-width horizontal band, black (ink), bone or ruled paper, that every section of a page sits in.</p><a href="components/Band/README.md">Guidelines</a></header>
@@ -117,6 +117,23 @@ body{margin:0;background:var(--ink);color:var(--bone);font:400 15px/1.5 var(--fo
 </div>
   </div>
 </section>
+<section class="g-item" id="DoubleSlit">
+  <header class="g-head"><h2>DoubleSlit</h2><p>A live solution of the 2D time-dependent Schrödinger equation: a Gaussian wavepacket meets a barrier with one or two slits, and a screen near the right edge builds up the interference pattern.</p><a href="components/DoubleSlit/README.md">Guidelines</a></header>
+  <div class="g-frame">
+<div class="si-band si-band--ink">
+  <div class="si-panel-wrap">
+    <div class="si-panel-shadow" data-si-tear="23" aria-hidden="true"></div>
+    <div class="si-panel si-panel--dark" data-si-tear="23">
+      <canvas id="qs" class="si-live" role="img" aria-label="Live simulation: a quantum wavepacket passes through two slits and forms interference fringes"></canvas>
+      <div class="si-chips" role="group" aria-label="Double slit" id="qs-chips">
+        <button type="button" class="si-chip" data-si-chip="2" aria-pressed="true">Two slits</button><button type="button" class="si-chip" data-si-chip="1" aria-pressed="false">One slit</button><button type="button" class="si-chip" id="qs-fire">Fire</button>
+        <span class="si-chip-eq">i ∂ψ/∂t = −½∇²ψ + Vψ, solved live</span>
+      </div>
+    </div>
+  </div>
+</div>
+  </div>
+</section>
 <section class="g-item" id="FigurePlate">
   <header class="g-head"><h2>FigurePlate</h2><p>A lit cream canvas with a torn edge holding a particle figure: any image drawn as springy dots, with ink features, warm halftone skin and brush-stroke hair, plus a live readout, the real update rule and a caption.</p><a href="components/FigurePlate/README.md">Guidelines</a></header>
   <div class="g-frame">
@@ -153,6 +170,29 @@ body{margin:0;background:var(--ink);color:var(--bone);font:400 15px/1.5 var(--fo
 </div>
   </div>
 </section>
+<section class="g-item" id="LabControls">
+  <header class="g-head"><h2>LabControls</h2><p>A collapsible &quot;Lab controls&quot; chip on a figure&#x27;s canvas that opens sliders for the constants of its update rule, so visitors can change the physics they just read.</p><a href="components/LabControls/README.md">Guidelines</a></header>
+  <div class="g-frame">
+<div class="si-band si-band--ink" style="display:flex;justify-content:center">
+  <figure class="si-plate" style="margin:0;width:340px">
+    <div class="si-plate__shadow" data-si-tear="43" data-si-radius="26" aria-hidden="true"></div>
+    <div class="si-plate__bg" data-si-tear="43" data-si-radius="26" aria-hidden="true"></div>
+    <div class="si-figure"><canvas id="lab-fig" role="img" aria-label="A generated head drawn in dots"></canvas></div>
+    <div class="si-eq" aria-hidden="true">v += <i data-si-eq="k">0.045</i>·(x₀ − x) + F &nbsp; v *= <i data-si-eq="c">0.85</i></div>
+    <details class="si-lab" id="lab" open>
+      <summary>Lab controls</summary>
+      <div class="si-lab__body">
+        <label for="lk">Spring k</label><input type="range" id="lk" data-si-lab="k" min="0.005" max="0.15" step="0.005" value="0.045"><output data-si-out="k" for="lk">0.045</output>
+        <label for="lc">Damping c</label><input type="range" id="lc" data-si-lab="c" min="0.6" max="0.98" step="0.01" value="0.85"><output data-si-out="c" for="lc">0.85</output>
+        <label for="lr">Push radius R</label><input type="range" id="lr" data-si-lab="r" min="20" max="140" step="1" value="54"><output data-si-out="r" for="lr">54px</output>
+        <div class="si-lab__actions"><button type="button" data-si-act="scatter">Scatter</button><button type="button" data-si-act="reset">Reset</button></div>
+      </div>
+    </details>
+    <figcaption><b>Fig. 1</b>Drag the sliders, then scatter.</figcaption>
+  </figure>
+</div>
+  </div>
+</section>
 <section class="g-item" id="MegaTitle">
   <header class="g-head"><h2>MegaTitle</h2><p>A giant condensed uppercase title (Anton, t-mega) in one flat colour, used for section names and project names; its letters rise into place.</p><a href="components/MegaTitle/README.md">Guidelines</a></header>
   <div class="g-frame">
@@ -166,6 +206,23 @@ body{margin:0;background:var(--ink);color:var(--bone);font:400 15px/1.5 var(--fo
   <header class="g-head"><h2>NavBar</h2><p>A sticky black bar with the marker wordmark on the left and uppercase display links on the right.</p><a href="components/NavBar/README.md">Guidelines</a></header>
   <div class="g-frame">
 <nav class="si-nav" aria-label="Main"><div class="si-nav__in"><a class="si-nav__name" href="#">Shreyas K.</a><ul class="si-nav__links"><li><a href="#">Work</a></li><li><a href="#">Notebook</a></li><li><a href="#">About</a></li></ul></div></nav>
+  </div>
+</section>
+<section class="g-item" id="OrbitalCloud">
+  <header class="g-head"><h2>OrbitalCloud</h2><p>Real hydrogen orbitals drawn as clouds of points sampled from |ψ|², coloured by the sign of ψ, that spring from one shape to the next when you pick another orbital.</p><a href="components/OrbitalCloud/README.md">Guidelines</a></header>
+  <div class="g-frame">
+<div class="si-band si-band--ink">
+  <div class="si-panel-wrap">
+    <div class="si-panel-shadow" data-si-tear="13" aria-hidden="true"></div>
+    <div class="si-panel" data-si-tear="13">
+      <canvas id="orb" class="si-live" role="img" aria-label="Hydrogen 2p orbital as a cloud of points"></canvas>
+      <div class="si-chips" role="group" aria-label="Orbital" id="orb-chips">
+        <button type="button" class="si-chip" data-si-chip="1s" aria-pressed="false">1s</button><button type="button" class="si-chip" data-si-chip="2p" aria-pressed="true">2p</button><button type="button" class="si-chip" data-si-chip="3d" aria-pressed="false">3d</button>
+        <span class="si-chip-eq" id="orb-eq"></span>
+      </div>
+    </div>
+  </div>
+</div>
   </div>
 </section>
 <section class="g-item" id="PinnedPhoto">
@@ -232,6 +289,12 @@ body{margin:0;background:var(--ink);color:var(--bone);font:400 15px/1.5 var(--fo
 <script>
 (function(){
 StudioInk.init();
+var qs=StudioInk.doubleSlit(document.getElementById('qs'),{slits:2});
+StudioInk.chips(document.getElementById('qs-chips'),function(n){qs.slits(+n)});
+document.getElementById('qs-fire').addEventListener('click',function(){qs.fire()});
+})();
+(function(){
+StudioInk.init();
 var s=7,rnd=function(){s=s*16807%2147483647;return s/2147483647},pts=[],face=function(x,y){var u=(x-150)/80,v=(y-205)/105;return u*u+v*v};
 for(var i=0;i<30000&&pts.length<2600;i++){var x=60+rnd()*180,y=95+rnd()*220;if(face(x,y)>1)continue;var u=(x-150)/80,v=(y-205)/105,nz=Math.sqrt(Math.max(0,1-u*u-v*v)),light=Math.max(0,-u*.55-v*.45+nz*.7),d=Math.min(.59,Math.max(0,.62-.5*light));if(rnd()>d+.3)continue;pts.push([x,y,d])}
 var blob=function(cx,cy,rx,ry,n,d){for(var i=0;i<n;i++){var a=rnd()*6.283,r=Math.sqrt(rnd());pts.push([cx+Math.cos(a)*rx*r,cy+Math.sin(a)*ry*r,d+rnd()*.1])}};
@@ -247,7 +310,24 @@ StudioInk.init()
 StudioInk.init();StudioInk.drawIn(document,300)
 })();
 (function(){
+StudioInk.init();
+var s=7,rnd=function(){s=s*16807%2147483647;return s/2147483647},pts=[],face=function(x,y){var u=(x-150)/80,v=(y-205)/105;return u*u+v*v};
+for(var i=0;i<30000&&pts.length<2600;i++){var x=60+rnd()*180,y=95+rnd()*220;if(face(x,y)>1)continue;var u=(x-150)/80,v=(y-205)/105,nz=Math.sqrt(Math.max(0,1-u*u-v*v)),light=Math.max(0,-u*.55-v*.45+nz*.7),d=Math.min(.59,Math.max(0,.62-.5*light));if(rnd()>d+.3)continue;pts.push([x,y,d])}
+var blob=function(cx,cy,rx,ry,n,d){for(var i=0;i<n;i++){var a=rnd()*6.283,r=Math.sqrt(rnd());pts.push([cx+Math.cos(a)*rx*r,cy+Math.sin(a)*ry*r,d+rnd()*.1])}};
+blob(122,196,14,7,70,.88);blob(178,196,14,7,70,.88);blob(122,177,21,4,55,.75);blob(178,177,21,4,55,.75);blob(150,264,26,4,70,.78);blob(150,234,7,11,26,.68);
+for(var j=0;j<9000;j++){var hx=45+rnd()*210,hy=40+rnd()*180,hu=(hx-150)/98,hv=(hy-160)/118;if(hu*hu+hv*hv>1||face(hx,hy)<1||hy>205)continue;if(rnd()<.8)pts.push([hx,hy,.6+rnd()*.4])}
+var fig=StudioInk.particleFigure(document.getElementById('lab-fig'),pts,{head:{cx:150,cy:160,ax:98,ay:118},isHair:function(x,y){return y<205&&face(x,y)>1}});
+StudioInk.labControls(document.getElementById('lab'),fig);
+})();
+(function(){
 StudioInk.init();document.querySelectorAll('.si-mega').forEach(function(h,i){StudioInk.split(h);StudioInk.rise(h,i*250)})
+})();
+(function(){
+StudioInk.init();
+var cv=document.getElementById('orb'),names=['1s','2p','3d'],chips=document.getElementById('orb-chips');
+var orb=StudioInk.orbitals(cv,{mode:'2p',onChange:function(n,eq){document.getElementById('orb-eq').textContent=eq;cv.setAttribute('aria-label','Hydrogen '+n+' orbital as a cloud of points');chips.querySelectorAll('[data-si-chip]').forEach(function(b){b.setAttribute('aria-pressed',String(b.getAttribute('data-si-chip')===n))})}});
+StudioInk.chips(chips,function(n){orb.set(n)});
+cv.addEventListener('click',function(){orb.set(names[(names.indexOf(orb.mode)+1)%3])});
 })();
 (function(){
 StudioInk.init()

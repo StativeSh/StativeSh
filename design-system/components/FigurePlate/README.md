@@ -12,4 +12,6 @@ A lit cream canvas with a torn edge holding a particle figure: any image drawn a
 - Keep readout and equation text in the lighter middle of the canvas (`canvas-muted` and `canvas-accent` lose contrast near `canvas-dark`).
 - The plate and its `.si-plate__shadow` share a `data-si-tear` seed with `data-si-radius="26"` (`radius-torn-sm`).
 
+`particleFigure` returns `{count, set({k, c, r}), get(), scatter()}`, so the update rule can be changed live; `LabControls` puts sliders on it.
+
 This preview draws a generated head, not a real portrait.

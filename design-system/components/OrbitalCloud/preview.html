@@ -1,0 +1,20 @@
+<!-- @dsCard group="Figures" height=470 subtitle="1s, 2p and 3d from |ψ|²; click the canvas or a chip" -->
+<div class="si-band si-band--ink">
+  <div class="si-panel-wrap">
+    <div class="si-panel-shadow" data-si-tear="13" aria-hidden="true"></div>
+    <div class="si-panel" data-si-tear="13">
+      <canvas id="orb" class="si-live" role="img" aria-label="Hydrogen 2p orbital as a cloud of points"></canvas>
+      <div class="si-chips" role="group" aria-label="Orbital" id="orb-chips">
+        <button type="button" class="si-chip" data-si-chip="1s" aria-pressed="false">1s</button><button type="button" class="si-chip" data-si-chip="2p" aria-pressed="true">2p</button><button type="button" class="si-chip" data-si-chip="3d" aria-pressed="false">3d</button>
+        <span class="si-chip-eq" id="orb-eq"></span>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+StudioInk.init();
+var cv=document.getElementById('orb'),names=['1s','2p','3d'],chips=document.getElementById('orb-chips');
+var orb=StudioInk.orbitals(cv,{mode:'2p',onChange:function(n,eq){document.getElementById('orb-eq').textContent=eq;cv.setAttribute('aria-label','Hydrogen '+n+' orbital as a cloud of points');chips.querySelectorAll('[data-si-chip]').forEach(function(b){b.setAttribute('aria-pressed',String(b.getAttribute('data-si-chip')===n))})}});
+StudioInk.chips(chips,function(n){orb.set(n)});
+cv.addEventListener('click',function(){orb.set(names[(names.indexOf(orb.mode)+1)%3])});
+</script>
