@@ -243,6 +243,9 @@ footer .sign{font:400 30px var(--marker);color:var(--red);transform:rotate(-4deg
   .notes{gap:44px}
 }
 @media (max-width:560px){
+  .chip{font-size:12px;padding:5px 8px}
+  .lab-chips{gap:4px;max-width:93%}
+  .lab-eq{display:none}
   nav.top ol{gap:16px}
   nav.top ol a{font-size:16px}
   nav.top ol a i{display:none}
@@ -638,7 +641,7 @@ function cloudStep(){
   orbA+=((amode?0:1)-orbA)*.12;cloudA+=((amode?1:0)-cloudA)*(amode?.12:.06);
   for(let i=0;i<CN*3;i++){cvel[i]=(cvel[i]+(ctgt[i]-cpos[i])*.07)*.8;cpos[i]+=cvel[i]}}
 function drawCloud(cx,cyy,u,F,spin){
-  const P2=v=>{const s=F/(F-v[2]);return [cx+v[0]*s*u,cyy+v[1]*s*u,s]},back=[],front=[];
+  const us=u*1.5,P2=v=>{const s=F/(F-v[2]);return [cx+v[0]*s*us,cyy+v[1]*s*us,s]},back=[],front=[];
   for(let i=0;i<CN;i++){const v=rot(cpos[i*3],cpos[i*3+1],cpos[i*3+2],apx+spin,apy+.25);(v[2]<0?back:front).push([v,csg[i]])}
   const dot=([v,sg])=>{const p=P2(v),t=Math.max(0,Math.min(1,(v[2]+130)/260)),c=(sg>0?AMB:TEA)[1];ax.fillStyle=rgba(c,(.25+.6*t)*cloudA);ax.beginPath();ax.arc(p[0],p[1],(1.1+1.4*t)*u*p[2],0,6.283);ax.fill()};
   back.forEach(dot);
@@ -732,7 +735,12 @@ else{qFire();new IntersectionObserver(x=>{const was=qrun;qrun=x[0].isIntersectin
 /* ---- Atmosphere: city-light interference field + embers that move on twos (12 fps) ---- */
 const fc=document.getElementById('field'),fx=fc.getContext('2d');
 let FW,FH,FA,FP,ft=0,fpx=0,fpy=0,ftx=0,fty=0,fs=0;const EM=[];
-const small=()=>innerWidth<700,GX=small()?44:84,GZ=small()?40:64;
+const small=()=>innerWidth<700;
+// Quality steps for the background field: it watches its own frame times and gets sparser (then redraws every
+// other frame) when the page is struggling, so the hero portrait stays smooth on low-power devices.
+const FQ=small()?[[44,40,1],[34,30,1],[26,24,2]]:[[84,64,1],[60,46,1],[44,34,2]];let fql=0,GX=FQ[0][0],GZ=FQ[0][1],fEvery=1,fEma=16.7,fLast=0,fN=0;
+function fieldQuality(now){if(fLast){const dt=Math.min(100,now-fLast);fEma=fEma*.95+dt*.05}fLast=now;
+  if(++fN>=90){fN=0;if(fEma>24&&fql<FQ.length-1){fql++;[GX,GZ,fEvery]=FQ[fql]}}}
 function fsize(){const dpr=Math.min(2,window.devicePixelRatio||1);FW=innerWidth;FH=innerHeight;fc.width=FW*dpr;fc.height=FH*dpr;fx.setTransform(dpr,0,0,dpr,0,0);
   const cs=getComputedStyle(document.documentElement);FA=hex(cs.getPropertyValue('--sig'));FP=hex(cs.getPropertyValue('--paint'))}
 fsize();addEventListener('resize',()=>{fsize();if(still)field()});
@@ -756,7 +764,7 @@ function field(){
   for(const e of EM){const c=e.c?FP:FA;fx.strokeStyle='rgba('+c[0]+','+c[1]+','+c[2]+',.55)';fx.lineWidth=e.s;fx.beginPath();fx.moveTo(e.x,e.y);fx.lineTo(e.x-Math.sin(e.w)*2,e.y+e.v*.9);fx.stroke()}
 }
 function stepEmbers(){for(const e of EM){e.y-=e.v;e.w+=.35;e.x+=Math.sin(e.w)*2.2;if(e.y<-12){e.y=FH+12;e.x=Math.random()*FW}}}
-function floop(){if(!document.hidden){ft++;if(ft%5===0)stepEmbers();field()}requestAnimationFrame(floop)}
+function floop(now){if(!document.hidden){fieldQuality(now);ft++;if(ft%5===0)stepEmbers();if(ft%fEvery===0)field()}else fLast=0;requestAnimationFrame(floop)}
 if(still){field();addEventListener('scroll',field,{passive:true})}else requestAnimationFrame(floop);
 
 /* ---- Line boil + film grain, on twos ---- */
@@ -772,6 +780,11 @@ ring.style.transform=ringT(-8);
 let rrun=false,rang=0,rt=0;
 function spinRing(){if(!rrun)return;rt+=.06;const target=scrollY*.09+rt;rang+=(target-rang)*.08;ring.style.transform=ringT((-rang).toFixed(2));requestAnimationFrame(spinRing)}
 if(!still)new IntersectionObserver(x=>{const was=rrun;rrun=x[0].isIntersecting;if(rrun&&!was)requestAnimationFrame(spinRing)}).observe(ring.parentElement);
+
+/* ---- Straddling titles: shrink until the title sits on one line, so the bone/ink split runs through it ---- */
+function fitStraddles(){document.querySelectorAll('.straddle').forEach(s=>{s.style.fontSize='';const h=s.querySelector('.mega');let fs=parseFloat(getComputedStyle(s).fontSize);
+  while(fs>30&&h.getBoundingClientRect().height>fs*1.25){fs-=2;s.style.fontSize=fs+'px'}})}
+fitStraddles();addEventListener('resize',fitStraddles);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitStraddles);
 
 /* ---- Panels tilt toward the pointer ---- */
 if(!still)document.querySelectorAll('.card,.tilt').forEach(el=>{
